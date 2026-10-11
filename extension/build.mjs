@@ -44,15 +44,25 @@ const common = {
 };
 
 if (dev) {
-    // Toast playground: http://localhost:8123/toast.html
-    const ctx = await esbuild.context({ ...common, entryPoints: ['dev/harness.js'], outdir: 'dev/build', format: 'iife' });
-    await ctx.watch();
-    await ctx.serve({ servedir: dir('dev'), port: 8123 });
+    // Playgrounds: http://localhost:8123/toast.html, http://localhost:8123/popup.html
+    const toast = await esbuild.context({ ...common, entryPoints: ['dev/harness.js'], outdir: 'dev/build', format: 'iife' });
+    const popup = await esbuild.context({
+        ...common,
+        entryPoints: ['src/popup/popup.js', 'src/popup/popup.css'],
+        outdir: 'dev/build/popup',
+        format: 'iife',
+        loader: { '.css': 'css' },
+    });
+    await popup.watch();
+    await toast.watch();
+    await toast.serve({ servedir: dir('dev'), port: 8123 });
 } else {
     const outdir = dir('../Shared (Extension)/Resources/');
     const contexts = await Promise.all([
         esbuild.context({ ...common, outdir, entryPoints: ['src/content.js'], format: 'iife' }),
         esbuild.context({ ...common, outdir, entryPoints: ['src/background.js'], format: 'esm' }),
+        esbuild.context({ ...common, outdir, entryPoints: ['src/popup/popup.js'], format: 'esm' }),
+        esbuild.context({ ...common, outdir, entryPoints: ['src/popup/popup.css'], loader: { '.css': 'css' } }),
     ]);
     if (watch) {
         await Promise.all(contexts.map((ctx) => ctx.watch()));

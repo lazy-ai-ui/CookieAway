@@ -1248,6 +1248,19 @@ function parse(url, options) {
   return parseImpl(url, 5, suffixLookup, options, getEmptyResult());
 }
 
+// src/site.js
+function siteKey(url) {
+  try {
+    const { protocol, hostname } = new URL(url);
+    if (!["http:", "https:"].includes(protocol) || !hostname) {
+      return null;
+    }
+    return parse(hostname).domain || hostname;
+  } catch {
+    return null;
+  }
+}
+
 // src/background.js
 var config = {
   enabled: true,
@@ -1271,14 +1284,6 @@ var config = {
     waits: false
   }
 };
-function siteKey(url) {
-  try {
-    const { hostname } = new URL(url);
-    return parse(hostname).domain || hostname;
-  } catch {
-    return null;
-  }
-}
 var storageQueue = Promise.resolve();
 function updateStorage(area, key, fallback, fn) {
   const run = storageQueue.then(async () => {
@@ -1339,8 +1344,14 @@ var actions = {
   "cookieaway:skipOnce": (tabId, site) => updateStorage("session", "skip", {}, (skip) => ({
     value: { ...skip, once: { ...skip.once, [tabId]: { site, until: Date.now() + SKIP_WINDOW_MS } } }
   })),
-  "cookieaway:whitelist": (tabId, site) => updateStorage("local", "whitelist", [], (list) => ({ value: list.includes(site) ? list : [...list, site] }))
+  "cookieaway:whitelist": (tabId, site) => setWhitelisted(site, true)
 };
+function setWhitelisted(site, whitelisted) {
+  return updateStorage("local", "whitelist", [], (list) => {
+    const rest = list.filter((s) => s !== site);
+    return { value: whitelisted ? [...rest, site] : rest };
+  });
+}
 browser.tabs.onRemoved.addListener((tabId) => {
   pagesDone.delete(tabId);
   updateStorage("session", "skip", {}, (skip) => {
@@ -1368,6 +1379,9 @@ async function evalInFrame(tabId, frameId, snippetId) {
   return injection?.result;
 }
 browser.runtime.onMessage.addListener((msg, sender) => {
+  if (msg.type === "cookieaway:setWhitelisted") {
+    return setWhitelisted(msg.site, msg.whitelisted).then(() => ({ ok: true }));
+  }
   const tabId = sender.tab?.id;
   const frameId = sender.frameId;
   if (tabId === void 0) {

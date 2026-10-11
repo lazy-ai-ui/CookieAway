@@ -1,6 +1,6 @@
 import { evalSnippets, filterCompactRules } from '@duckduckgo/autoconsent';
 import compactRules from '@duckduckgo/autoconsent/rules/compact-rules.json';
-import { parse } from 'tldts-experimental';
+import { siteKey } from './site.js';
 
 const config = {
     enabled: true,
@@ -24,17 +24,6 @@ const config = {
         waits: false,
     },
 };
-
-// eTLD+1 of the page the user is on, e.g. "news.example.co.uk" -> "example.co.uk".
-// Falls back to the hostname for IPs, localhost and the like.
-function siteKey(url) {
-    try {
-        const { hostname } = new URL(url);
-        return parse(hostname).domain || hostname;
-    } catch {
-        return null;
-    }
-}
 
 // Serializes read-modify-write on storage so concurrent messages from several frames don't race.
 let storageQueue = Promise.resolve();
@@ -109,9 +98,15 @@ const actions = {
         updateStorage('session', 'skip', {}, (skip) => ({
             value: { ...skip, once: { ...skip.once, [tabId]: { site, until: Date.now() + SKIP_WINDOW_MS } } },
         })),
-    'cookieaway:whitelist': (tabId, site) =>
-        updateStorage('local', 'whitelist', [], (list) => ({ value: list.includes(site) ? list : [...list, site] })),
+    'cookieaway:whitelist': (tabId, site) => setWhitelisted(site, true),
 };
+
+function setWhitelisted(site, whitelisted) {
+    return updateStorage('local', 'whitelist', [], (list) => {
+        const rest = list.filter((s) => s !== site);
+        return { value: whitelisted ? [...rest, site] : rest };
+    });
+}
 
 browser.tabs.onRemoved.addListener((tabId) => {
     pagesDone.delete(tabId);
@@ -145,6 +140,11 @@ async function evalInFrame(tabId, frameId, snippetId) {
 }
 
 browser.runtime.onMessage.addListener((msg, sender) => {
+    // From the toolbar popup: it has no tab of its own and names the site explicitly.
+    if (msg.type === 'cookieaway:setWhitelisted') {
+        return setWhitelisted(msg.site, msg.whitelisted).then(() => ({ ok: true }));
+    }
+
     const tabId = sender.tab?.id;
     const frameId = sender.frameId;
     if (tabId === undefined) {

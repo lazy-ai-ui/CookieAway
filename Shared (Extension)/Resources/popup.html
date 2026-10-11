@@ -1,11 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="popup.css">
     <script type="module" src="popup.js"></script>
 </head>
 <body>
-    <strong>Hello World!</strong>
+    <section class="site">
+        <label class="row">
+            <span class="site-text">
+                <span class="title">Работать на этом сайте</span>
+                <span class="host" id="host"></span>
+            </span>
+            <input type="checkbox" class="switch" id="enabled" role="switch" disabled>
+        </label>
+    </section>
+
+    <section class="stat">
+        Отклонено баннеров: <span class="count" id="count">0</span>
+    </section>
+
+    <section class="exceptions">
+        <h2>Исключения</h2>
+        <ul id="whitelist"></ul>
+        <p class="empty" id="empty">Пока нет. Сайты попадают сюда через переключатель выше или «Не трогать этот сайт» в плашке.</p>
+    </section>
 </body>
 </html>
