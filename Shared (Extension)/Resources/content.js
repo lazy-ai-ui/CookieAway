@@ -3447,7 +3447,7 @@
   }
 
   // src/toast/toast.css
-  var toast_default = "/* Host lives in the page's DOM: shadow-context !important beats any page rule. */\n:host {\n    all: initial !important;\n    display: block !important;\n    position: fixed !important;\n    inset: 0 !important;\n    width: auto !important;\n    height: auto !important;\n    margin: 0 !important;\n    padding: 0 !important;\n    border: 0 !important;\n    background: transparent !important;\n    overflow: visible !important;\n    opacity: 1 !important;\n    visibility: visible !important;\n    transform: none !important;\n    filter: none !important;\n    pointer-events: none !important;\n    z-index: 2147483647 !important;\n}\n\n.anchor {\n    all: initial;\n    position: absolute;\n    left: 0;\n    right: 0;\n    bottom: 24px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 12px;\n    pointer-events: none;\n    font-family: -apple-system, BlinkMacSystemFont, sans-serif;\n    font-size: 13px;\n    line-height: 16px;\n    font-weight: 400;\n    color: #fff;\n    -webkit-font-smoothing: antialiased;\n}\n\nsvg {\n    display: block;\n    flex: none;\n}\n\n/* --- Pill ----------------------------------------------------------------------------------- */\n\n.pill {\n    all: initial;\n    box-sizing: border-box;\n    display: flex;\n    align-items: center;\n    justify-content: flex-start;\n    width: 36px;\n    height: 36px;\n    border-radius: 999px;\n    background: #1c1c1e;\n    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);\n    overflow: hidden;\n    transform-origin: center;\n    pointer-events: auto;\n    cursor: pointer;\n    font: inherit;\n    color: inherit;\n}\n\n.pill:focus-visible {\n    outline: 2px solid #0a84ff;\n    outline-offset: 2px;\n}\n\n.dot .pill {\n    pointer-events: none;\n    cursor: default;\n}\n\n/* Content is laid out at its natural width and pinned left; the pill clips it while growing. */\n.content {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    flex: none;\n    height: 100%;\n    padding: 0 16px 0 10px;\n    white-space: nowrap;\n}\n\n.text {\n    display: flex;\n    align-items: center;\n    gap: 5px;\n}\n\n.sep {\n    opacity: 0.5;\n}\n\n.edit {\n    font-weight: 500;\n    text-decoration: underline;\n    text-underline-offset: 3px;\n}\n\n.confirm .sep,\n.confirm .edit {\n    display: none;\n}\n\n/* --- Popover -------------------------------------------------------------------------------- */\n\n.popover {\n    display: flex;\n    flex-direction: column;\n    padding: 6px;\n    border-radius: 12px;\n    background: #fff;\n    border: 0.5px solid rgba(0, 0, 0, 0.12);\n    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);\n    color: #1c1c1e;\n    pointer-events: auto;\n}\n\n.popover[hidden] {\n    display: none;\n}\n\n.item {\n    all: initial;\n    box-sizing: border-box;\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    padding: 8px 10px;\n    border-radius: 6px;\n    font: inherit;\n    color: inherit;\n    white-space: nowrap;\n    cursor: pointer;\n}\n\n.item:hover,\n.item:focus-visible {\n    background: rgba(0, 0, 0, 0.06);\n}\n\n@media (prefers-color-scheme: dark) {\n    .popover {\n        background: #2c2c2e;\n        border-color: rgba(255, 255, 255, 0.12);\n        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);\n        color: #fff;\n    }\n\n    .item:hover,\n    .item:focus-visible {\n        background: rgba(255, 255, 255, 0.1);\n    }\n}\n";
+  var toast_default = "/* Host lives in the page's DOM: shadow-context !important beats any page rule. */\n:host {\n    all: initial !important;\n    display: block !important;\n    position: fixed !important;\n    inset: 0 !important;\n    width: auto !important;\n    height: auto !important;\n    margin: 0 !important;\n    padding: 0 !important;\n    border: 0 !important;\n    background: transparent !important;\n    overflow: visible !important;\n    opacity: 1 !important;\n    visibility: visible !important;\n    transform: none !important;\n    filter: none !important;\n    pointer-events: none !important;\n    z-index: 2147483647 !important;\n}\n\n.anchor {\n    all: initial;\n    position: absolute;\n    left: 0;\n    right: 0;\n    bottom: 24px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 12px;\n    pointer-events: none;\n    font-family: -apple-system, BlinkMacSystemFont, sans-serif;\n    font-size: 13px;\n    line-height: 16px;\n    font-weight: 400;\n    color: #fff;\n    -webkit-font-smoothing: antialiased;\n}\n\nsvg {\n    display: block;\n    flex: none;\n}\n\n/* --- Pill ----------------------------------------------------------------------------------- */\n\n/* The pill is drawn from parts that only move with transforms, so width changes run on the\n   compositor and stay smooth on busy pages: two round caps, a middle strip scaled on X, a shadow\n   scaled on X, and a clip that slides with the right edge. The button itself keeps the widest\n   width of the current animation; .track centers the visible part inside it. */\n.pill {\n    all: initial;\n    box-sizing: border-box;\n    position: relative;\n    display: block;\n    width: 36px;\n    height: 36px;\n    border-radius: 999px;\n    transform-origin: center;\n    pointer-events: auto;\n    cursor: pointer;\n    font: inherit;\n    color: inherit;\n}\n\n.pill:focus-visible {\n    outline: 2px solid #0a84ff;\n    outline-offset: 2px;\n}\n\n.dot .pill {\n    pointer-events: none;\n    cursor: default;\n}\n\n.track {\n    position: absolute;\n    inset: 0;\n}\n\n.shadow,\n.cap,\n.mid {\n    position: absolute;\n    top: 0;\n    height: 36px;\n}\n\n.shadow {\n    left: 0;\n    width: 100%;\n    border-radius: 18px;\n    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);\n    transform-origin: left center;\n}\n\n.cap {\n    left: 0;\n    width: 36px;\n    border-radius: 50%;\n    background: #1c1c1e;\n}\n\n.mid {\n    left: 18px;\n    width: calc(100% - 36px);\n    background: #1c1c1e;\n    transform-origin: left center;\n}\n\n/* Right edge follows the visible pill; extends far left so it never cuts the icon on overshoot. */\n.clip {\n    position: absolute;\n    top: 0;\n    left: -100%;\n    width: 200%;\n    height: 100%;\n    overflow: hidden;\n}\n\n/* Laid out at its natural width from the pill's left edge; the clip reveals it while growing. */\n.content {\n    position: absolute;\n    top: 0;\n    left: 50%;\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    height: 100%;\n    box-sizing: border-box;\n    padding: 0 16px 0 10px;\n    white-space: nowrap;\n}\n\n.text {\n    display: flex;\n    align-items: center;\n    gap: 5px;\n}\n\n.sep {\n    opacity: 0.5;\n}\n\n.edit {\n    font-weight: 500;\n    text-decoration: underline;\n    text-underline-offset: 3px;\n}\n\n.confirm .sep,\n.confirm .edit {\n    display: none;\n}\n\n/* --- Popover -------------------------------------------------------------------------------- */\n\n.popover {\n    display: flex;\n    flex-direction: column;\n    padding: 6px;\n    border-radius: 12px;\n    background: #fff;\n    border: 0.5px solid rgba(0, 0, 0, 0.12);\n    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);\n    color: #1c1c1e;\n    pointer-events: auto;\n}\n\n.popover[hidden] {\n    display: none;\n}\n\n.item {\n    all: initial;\n    box-sizing: border-box;\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    padding: 8px 10px;\n    border-radius: 6px;\n    font: inherit;\n    color: inherit;\n    white-space: nowrap;\n    cursor: pointer;\n}\n\n.item:hover,\n.item:focus-visible {\n    background: rgba(0, 0, 0, 0.06);\n}\n\n@media (prefers-color-scheme: dark) {\n    .popover {\n        background: #2c2c2e;\n        border-color: rgba(255, 255, 255, 0.12);\n        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);\n        color: #fff;\n    }\n\n    .item:hover,\n    .item:focus-visible {\n        background: rgba(255, 255, 255, 0.1);\n    }\n}\n";
 
   // src/toast/toast.js
   var TEXT = {
@@ -3492,9 +3492,17 @@
     <button class="item" role="menuitem" data-action="whitelist">${PAUSE_ICON}<span>\u041D\u0435 \u0442\u0440\u043E\u0433\u0430\u0442\u044C \u044D\u0442\u043E\u0442 \u0441\u0430\u0439\u0442</span></button>
   </div>
   <button class="pill" aria-haspopup="menu" aria-expanded="false">
-    <span class="content">
-      <span class="icon">${COOKIE_ICON}</span>
-      <span class="text"><span class="label"></span><span class="sep">\xB7</span><span class="edit">\u0418\u0437\u043C\u0435\u043D\u0438\u0442\u044C</span></span>
+    <span class="track">
+      <span class="shadow"></span>
+      <span class="cap"></span>
+      <span class="mid"></span>
+      <span class="cap cap-right"></span>
+      <span class="clip">
+        <span class="content">
+          <span class="icon">${COOKIE_ICON}</span>
+          <span class="text"><span class="label"></span><span class="sep">\xB7</span><span class="edit">\u0418\u0437\u043C\u0435\u043D\u0438\u0442\u044C</span></span>
+        </span>
+      </span>
     </span>
   </button>
 </div>`;
@@ -3535,6 +3543,15 @@
       this.root = root;
       this.anchor = root.querySelector(".anchor");
       this.pill = root.querySelector(".pill");
+      this.parts = {
+        track: root.querySelector(".track"),
+        shadow: root.querySelector(".shadow"),
+        mid: root.querySelector(".mid"),
+        capRight: root.querySelector(".cap-right"),
+        clip: root.querySelector(".clip"),
+        content: root.querySelector(".content")
+      };
+      this.width = CIRCLE;
       this.content = root.querySelector(".content");
       this.icon = root.querySelector(".icon");
       this.text = root.querySelector(".text");
@@ -3625,34 +3642,68 @@
       const circle = this.appearCircle();
       await wait(320 + 250);
       if (!this.alive) return;
-      const width = this.content.offsetWidth;
       await Promise.all([
         circle,
-        run(this.pill, { width: `${CIRCLE}px` }, { width: `${width}px` }, { duration: 450, easing: EXPAND }),
+        this.resize(this.content.offsetWidth, { duration: 450, easing: EXPAND }),
         run(this.text, { opacity: 0 }, { opacity: 1 }, { duration: 220, delay: 140, easing: "ease-out" }),
         run(this.text, { translate: "-6px 0" }, { translate: "0 0" }, { duration: 280, delay: 140, easing: "ease-out" })
       ]);
     }
     async appearReduced() {
       if (this.mode === "full") {
-        this.pill.style.width = `${this.content.offsetWidth}px`;
+        this.setWidth(this.content.offsetWidth);
       }
       await run(this.anchor, { opacity: 0 }, { opacity: 1 }, { duration: 250, easing: "ease-out" });
     }
-    vanishCircle() {
+    vanishCircle(delay = 0) {
       return Promise.all([
-        run(this.pill, { transform: "scale(1)", opacity: 1 }, { transform: "scale(.6)", opacity: 0 }, { duration: 180, easing: "ease-in" }),
-        run(this.icon, { transform: "rotate(0deg) scale(1)" }, { transform: "rotate(20deg) scale(.6)" }, { duration: 180, easing: "ease-in" })
+        run(this.pill, { transform: "scale(1)", opacity: 1 }, { transform: "scale(.6)", opacity: 0 }, { duration: 180, delay, easing: "ease-in" }),
+        run(this.icon, { transform: "rotate(0deg) scale(1)" }, { transform: "rotate(20deg) scale(.6)" }, { duration: 180, delay, easing: "ease-in" })
       ]);
     }
+    // All exit steps are scheduled up front on one timeline: chaining them through promises leaves
+    // a gap of a few frames between collapse and vanish on busy pages, which reads as a stutter.
+    // This only works because every step is compositor-driven (see resize).
     async disappearFull() {
-      const width = this.pill.getBoundingClientRect().width;
       await Promise.all([
         run(this.text, { opacity: 1, translate: "0 0" }, { opacity: 0, translate: "-6px 0" }, { duration: 150, easing: "ease-in" }),
-        run(this.pill, { width: `${width}px` }, { width: `${CIRCLE}px` }, { duration: 300, delay: 60, easing: COLLAPSE })
+        this.resize(CIRCLE, { duration: 300, delay: 60, easing: COLLAPSE }),
+        this.vanishCircle(60 + 300)
       ]);
-      if (!this.alive) return;
-      await this.vanishCircle();
+    }
+    // --- Width ---------------------------------------------------------------------------------
+    // The button is laid out at `box` (the widest width of the animation) and every part is placed
+    // for the visible width `w` with transforms only, each linear in `w`. All parts share timing
+    // and easing, so they stay in lockstep on the compositor, overshoot included.
+    partStyles(box, w) {
+      return {
+        track: { translate: `${(box - w) / 2}px 0` },
+        shadow: { transform: `scaleX(${w / box})` },
+        mid: { transform: `scaleX(${box > CIRCLE ? (w - CIRCLE) / (box - CIRCLE) : 0})` },
+        capRight: { translate: `${w - CIRCLE}px 0` },
+        clip: { translate: `${w - box}px 0` },
+        content: { translate: `${box - w}px 0` }
+      };
+    }
+    setWidth(w) {
+      this.width = w;
+      this.pill.style.width = `${w}px`;
+      const styles = this.partStyles(w, w);
+      for (const [name, style] of Object.entries(styles)) {
+        Object.assign(this.parts[name].style, style);
+      }
+    }
+    async resize(to, options) {
+      const from = this.width;
+      const box = Math.max(from, to);
+      this.width = to;
+      this.pill.style.width = `${box}px`;
+      const start = this.partStyles(box, from);
+      const end = this.partStyles(box, to);
+      await Promise.all(Object.keys(start).map((name) => run(this.parts[name], start[name], end[name], options)));
+      if (this.alive && this.width === to) {
+        this.setWidth(to);
+      }
     }
     // --- Hold timer (paused on hover, while the popover is open, while an action runs) -----
     hold(ms) {
@@ -3744,16 +3795,14 @@
       if (this.reduced) {
         this.anchor.classList.add("confirm");
         this.label.textContent = CONFIRM[this.action.name];
-        this.pill.style.width = `${this.content.offsetWidth}px`;
+        this.setWidth(this.content.offsetWidth);
       } else {
         await run(this.text, { opacity: 1 }, { opacity: 0 }, { duration: 120, easing: "ease-in" });
         if (!this.alive) return;
-        const from = this.pill.getBoundingClientRect().width;
         this.anchor.classList.add("confirm");
         this.label.textContent = CONFIRM[this.action.name];
-        const to = this.content.offsetWidth;
         await Promise.all([
-          run(this.pill, { width: `${from}px` }, { width: `${to}px` }, { duration: 300, easing: EXPAND }),
+          this.resize(this.content.offsetWidth, { duration: 300, easing: EXPAND }),
           run(this.text, { opacity: 0 }, { opacity: 1 }, { duration: 200, delay: 60, easing: "ease-out" })
         ]);
       }

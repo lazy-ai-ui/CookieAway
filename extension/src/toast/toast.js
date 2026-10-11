@@ -48,9 +48,17 @@ const TEMPLATE = `
     <button class="item" role="menuitem" data-action="whitelist">${PAUSE_ICON}<span>Не трогать этот сайт</span></button>
   </div>
   <button class="pill" aria-haspopup="menu" aria-expanded="false">
-    <span class="content">
-      <span class="icon">${COOKIE_ICON}</span>
-      <span class="text"><span class="label"></span><span class="sep">·</span><span class="edit">Изменить</span></span>
+    <span class="track">
+      <span class="shadow"></span>
+      <span class="cap"></span>
+      <span class="mid"></span>
+      <span class="cap cap-right"></span>
+      <span class="clip">
+        <span class="content">
+          <span class="icon">${COOKIE_ICON}</span>
+          <span class="text"><span class="label"></span><span class="sep">·</span><span class="edit">Изменить</span></span>
+        </span>
+      </span>
     </span>
   </button>
 </div>`;
@@ -109,6 +117,15 @@ class Toast {
         this.root = root;
         this.anchor = root.querySelector('.anchor');
         this.pill = root.querySelector('.pill');
+        this.parts = {
+            track: root.querySelector('.track'),
+            shadow: root.querySelector('.shadow'),
+            mid: root.querySelector('.mid'),
+            capRight: root.querySelector('.cap-right'),
+            clip: root.querySelector('.clip'),
+            content: root.querySelector('.content'),
+        };
+        this.width = CIRCLE;
         this.content = root.querySelector('.content');
         this.icon = root.querySelector('.icon');
         this.text = root.querySelector('.text');
@@ -216,10 +233,9 @@ class Toast {
         await wait(320 + 250);
         if (!this.alive) return;
 
-        const width = this.content.offsetWidth;
         await Promise.all([
             circle,
-            run(this.pill, { width: `${CIRCLE}px` }, { width: `${width}px` }, { duration: 450, easing: EXPAND }),
+            this.resize(this.content.offsetWidth, { duration: 450, easing: EXPAND }),
             run(this.text, { opacity: 0 }, { opacity: 1 }, { duration: 220, delay: 140, easing: 'ease-out' }),
             run(this.text, { translate: '-6px 0' }, { translate: '0 0' }, { duration: 280, delay: 140, easing: 'ease-out' }),
         ]);
@@ -227,26 +243,66 @@ class Toast {
 
     async appearReduced() {
         if (this.mode === 'full') {
-            this.pill.style.width = `${this.content.offsetWidth}px`;
+            this.setWidth(this.content.offsetWidth);
         }
         await run(this.anchor, { opacity: 0 }, { opacity: 1 }, { duration: 250, easing: 'ease-out' });
     }
 
-    vanishCircle() {
+    vanishCircle(delay = 0) {
         return Promise.all([
-            run(this.pill, { transform: 'scale(1)', opacity: 1 }, { transform: 'scale(.6)', opacity: 0 }, { duration: 180, easing: 'ease-in' }),
-            run(this.icon, { transform: 'rotate(0deg) scale(1)' }, { transform: 'rotate(20deg) scale(.6)' }, { duration: 180, easing: 'ease-in' }),
+            run(this.pill, { transform: 'scale(1)', opacity: 1 }, { transform: 'scale(.6)', opacity: 0 }, { duration: 180, delay, easing: 'ease-in' }),
+            run(this.icon, { transform: 'rotate(0deg) scale(1)' }, { transform: 'rotate(20deg) scale(.6)' }, { duration: 180, delay, easing: 'ease-in' }),
         ]);
     }
 
+    // All exit steps are scheduled up front on one timeline: chaining them through promises leaves
+    // a gap of a few frames between collapse and vanish on busy pages, which reads as a stutter.
+    // This only works because every step is compositor-driven (see resize).
     async disappearFull() {
-        const width = this.pill.getBoundingClientRect().width;
         await Promise.all([
             run(this.text, { opacity: 1, translate: '0 0' }, { opacity: 0, translate: '-6px 0' }, { duration: 150, easing: 'ease-in' }),
-            run(this.pill, { width: `${width}px` }, { width: `${CIRCLE}px` }, { duration: 300, delay: 60, easing: COLLAPSE }),
+            this.resize(CIRCLE, { duration: 300, delay: 60, easing: COLLAPSE }),
+            this.vanishCircle(60 + 300),
         ]);
-        if (!this.alive) return;
-        await this.vanishCircle();
+    }
+
+    // --- Width ---------------------------------------------------------------------------------
+    // The button is laid out at `box` (the widest width of the animation) and every part is placed
+    // for the visible width `w` with transforms only, each linear in `w`. All parts share timing
+    // and easing, so they stay in lockstep on the compositor, overshoot included.
+
+    partStyles(box, w) {
+        return {
+            track: { translate: `${(box - w) / 2}px 0` },
+            shadow: { transform: `scaleX(${w / box})` },
+            mid: { transform: `scaleX(${box > CIRCLE ? (w - CIRCLE) / (box - CIRCLE) : 0})` },
+            capRight: { translate: `${w - CIRCLE}px 0` },
+            clip: { translate: `${w - box}px 0` },
+            content: { translate: `${box - w}px 0` },
+        };
+    }
+
+    setWidth(w) {
+        this.width = w;
+        this.pill.style.width = `${w}px`;
+        const styles = this.partStyles(w, w);
+        for (const [name, style] of Object.entries(styles)) {
+            Object.assign(this.parts[name].style, style);
+        }
+    }
+
+    async resize(to, options) {
+        const from = this.width;
+        const box = Math.max(from, to);
+        this.width = to;
+        this.pill.style.width = `${box}px`;
+        const start = this.partStyles(box, from);
+        const end = this.partStyles(box, to);
+        await Promise.all(Object.keys(start).map((name) => run(this.parts[name], start[name], end[name], options)));
+        // Same picture, tighter box: keeps the focus ring and hit area on the visible pill.
+        if (this.alive && this.width === to) {
+            this.setWidth(to);
+        }
     }
 
     // --- Hold timer (paused on hover, while the popover is open, while an action runs) -----
@@ -351,16 +407,14 @@ class Toast {
         if (this.reduced) {
             this.anchor.classList.add('confirm');
             this.label.textContent = CONFIRM[this.action.name];
-            this.pill.style.width = `${this.content.offsetWidth}px`;
+            this.setWidth(this.content.offsetWidth);
         } else {
             await run(this.text, { opacity: 1 }, { opacity: 0 }, { duration: 120, easing: 'ease-in' });
             if (!this.alive) return;
-            const from = this.pill.getBoundingClientRect().width;
             this.anchor.classList.add('confirm');
             this.label.textContent = CONFIRM[this.action.name];
-            const to = this.content.offsetWidth;
             await Promise.all([
-                run(this.pill, { width: `${from}px` }, { width: `${to}px` }, { duration: 300, easing: EXPAND }),
+                this.resize(this.content.offsetWidth, { duration: 300, easing: EXPAND }),
                 run(this.text, { opacity: 0 }, { opacity: 1 }, { duration: 200, delay: 60, easing: 'ease-out' }),
             ]);
         }

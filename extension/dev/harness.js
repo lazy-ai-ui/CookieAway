@@ -31,6 +31,16 @@ document.addEventListener('click', (e) => {
 $('#dark').addEventListener('change', (e) => document.body.classList.toggle('dark', e.target.checked));
 $('#aggressive').addEventListener('change', (e) => ($('#evil').media = e.target.checked ? 'all' : 'not all'));
 
+// Visible pill edges (the button box can be wider than the drawn pill while it resizes).
+window.pillEdges = () => {
+    const root = document.querySelector('cookieaway-toast')?.shadowRoot;
+    const [left, right] = root ? root.querySelectorAll('.cap') : [];
+    if (!left) return null;
+    const l = left.getBoundingClientRect();
+    const r = right.getBoundingClientRect();
+    return { left: Math.round(l.left), right: Math.round(r.right), center: Math.round((l.left + r.right) / 2) };
+};
+
 // Samples pill geometry every frame: window.trace(ms) -> [{t, w, scale, opacity, text}]
 window.trace = (ms = 5000) =>
     new Promise((resolve) => {
@@ -42,7 +52,8 @@ window.trace = (ms = 5000) =>
             const t = Math.round(performance.now() - t0);
             if (pill) {
                 const cs = getComputedStyle(pill);
-                out.push({ t, w: Math.round(pill.getBoundingClientRect().width), tr: cs.transform, op: cs.opacity, text: getComputedStyle(root.querySelector('.text')).opacity });
+                const edges = window.pillEdges();
+                out.push({ t, w: edges.right - edges.left, center: edges.center, tr: cs.transform, op: cs.opacity, text: getComputedStyle(root.querySelector('.text')).opacity });
             } else {
                 out.push({ t, gone: true });
             }

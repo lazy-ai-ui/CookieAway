@@ -45,18 +45,18 @@ svg {
 
 /* --- Pill ----------------------------------------------------------------------------------- */
 
+/* The pill is drawn from parts that only move with transforms, so width changes run on the
+   compositor and stay smooth on busy pages: two round caps, a middle strip scaled on X, a shadow
+   scaled on X, and a clip that slides with the right edge. The button itself keeps the widest
+   width of the current animation; .track centers the visible part inside it. */
 .pill {
     all: initial;
     box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    position: relative;
+    display: block;
     width: 36px;
     height: 36px;
     border-radius: 999px;
-    background: #1c1c1e;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
-    overflow: hidden;
     transform-origin: center;
     pointer-events: auto;
     cursor: pointer;
@@ -74,13 +74,61 @@ svg {
     cursor: default;
 }
 
-/* Content is laid out at its natural width and pinned left; the pill clips it while growing. */
+.track {
+    position: absolute;
+    inset: 0;
+}
+
+.shadow,
+.cap,
+.mid {
+    position: absolute;
+    top: 0;
+    height: 36px;
+}
+
+.shadow {
+    left: 0;
+    width: 100%;
+    border-radius: 18px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    transform-origin: left center;
+}
+
+.cap {
+    left: 0;
+    width: 36px;
+    border-radius: 50%;
+    background: #1c1c1e;
+}
+
+.mid {
+    left: 18px;
+    width: calc(100% - 36px);
+    background: #1c1c1e;
+    transform-origin: left center;
+}
+
+/* Right edge follows the visible pill; extends far left so it never cuts the icon on overshoot. */
+.clip {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Laid out at its natural width from the pill's left edge; the clip reveals it while growing. */
 .content {
+    position: absolute;
+    top: 0;
+    left: 50%;
     display: flex;
     align-items: center;
     gap: 8px;
-    flex: none;
     height: 100%;
+    box-sizing: border-box;
     padding: 0 16px 0 10px;
     white-space: nowrap;
 }
