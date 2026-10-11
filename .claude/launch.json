@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "toast-playground",
+      "runtimeExecutable": "/usr/local/bin/node",
+      "runtimeArgs": ["extension/build.mjs", "--dev"],
+      "port": 8123
+    }
+  ]
+}

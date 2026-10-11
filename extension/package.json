@@ -4,10 +4,12 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "watch": "node build.mjs --watch"
+    "watch": "node build.mjs --watch",
+    "dev": "node build.mjs --dev"
   },
   "dependencies": {
-    "@duckduckgo/autoconsent": "^16.50.0"
+    "@duckduckgo/autoconsent": "^16.50.0",
+    "tldts-experimental": "^7.4.18"
   },
   "devDependencies": {
     "esbuild": "^0.25.0"

@@ -1,24 +1,63 @@
 import * as esbuild from 'esbuild';
+import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
-const outdir = fileURLToPath(new URL('../Shared (Extension)/Resources/', import.meta.url));
+const dir = (path) => fileURLToPath(new URL(path, import.meta.url));
 const watch = process.argv.includes('--watch');
+const dev = process.argv.includes('--dev');
+
+// Small fixes to @duckduckgo/autoconsent applied at bundle time. Each one must match exactly,
+// so an upgrade that changes the code fails the build instead of silently dropping the fix.
+const autoconsentPatches = [
+    {
+        // The heuristic collects buttons with `[class*="button"]` and keeps only the innermost
+        // matches, so an <svg class="…button-icon"> inside a <button> replaces the button itself
+        // and, having no innerText, is then dropped (adidas.nl loses its "reject" button).
+        find: 'excludeContainers(getButtonLikeElements(el))',
+        replace: 'excludeContainers(getButtonLikeElements(el).filter((b) => b instanceof HTMLElement))',
+    },
+];
+
+const patchAutoconsent = {
+    name: 'patch-autoconsent',
+    setup(build) {
+        build.onLoad({ filter: /@duckduckgo[\\/]autoconsent[\\/]dist[\\/]autoconsent\.esm\.js$/ }, async (args) => {
+            let contents = await readFile(args.path, 'utf8');
+            for (const { find, replace } of autoconsentPatches) {
+                if (!contents.includes(find)) {
+                    throw new Error(`autoconsent patch no longer applies: ${find}`);
+                }
+                contents = contents.replace(find, replace);
+            }
+            return { contents, loader: 'js' };
+        });
+    },
+};
 
 const common = {
     bundle: true,
     target: 'safari17',
-    outdir,
+    absWorkingDir: dir('.'),
+    loader: { '.css': 'text' },
+    plugins: [patchAutoconsent],
     logLevel: 'info',
 };
 
-const contexts = await Promise.all([
-    esbuild.context({ ...common, entryPoints: ['src/content.js'], format: 'iife' }),
-    esbuild.context({ ...common, entryPoints: ['src/background.js'], format: 'esm' }),
-]);
-
-if (watch) {
-    await Promise.all(contexts.map((ctx) => ctx.watch()));
+if (dev) {
+    // Toast playground: http://localhost:8123/toast.html
+    const ctx = await esbuild.context({ ...common, entryPoints: ['dev/harness.js'], outdir: 'dev/build', format: 'iife' });
+    await ctx.watch();
+    await ctx.serve({ servedir: dir('dev'), port: 8123 });
 } else {
-    await Promise.all(contexts.map((ctx) => ctx.rebuild()));
-    await Promise.all(contexts.map((ctx) => ctx.dispose()));
+    const outdir = dir('../Shared (Extension)/Resources/');
+    const contexts = await Promise.all([
+        esbuild.context({ ...common, outdir, entryPoints: ['src/content.js'], format: 'iife' }),
+        esbuild.context({ ...common, outdir, entryPoints: ['src/background.js'], format: 'esm' }),
+    ]);
+    if (watch) {
+        await Promise.all(contexts.map((ctx) => ctx.watch()));
+    } else {
+        await Promise.all(contexts.map((ctx) => ctx.rebuild()));
+        await Promise.all(contexts.map((ctx) => ctx.dispose()));
+    }
 }

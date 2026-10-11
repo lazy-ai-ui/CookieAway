@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Toast playground</title>
+<style>
+  body { margin: 0; font: 15px/1.5 Georgia, serif; background: #fafaf7; color: #222; min-height: 200vh; }
+  body.dark { background: #121212; color: #ddd; }
+  .panel { position: sticky; top: 0; padding: 12px 16px; background: rgba(240,240,235,.95); border-bottom: 1px solid #ccc; font: 13px -apple-system, sans-serif; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; z-index: 10; }
+  body.dark .panel { background: rgba(30,30,30,.95); border-color: #444; }
+  article { max-width: 640px; margin: 24px auto; padding: 0 16px; }
+  #log { font: 12px ui-monospace, monospace; max-height: 140px; overflow: auto; width: 100%; }
+</style>
+<!-- Hostile site CSS: toggled by the "aggressive CSS" checkbox. -->
+<style id="evil" media="not all">
+  * { all: revert !important; font: 30px Papyrus, fantasy !important; color: red !important; line-height: 3 !important; letter-spacing: 4px !important; }
+  html, body { transform: scale(1) !important; filter: saturate(1.5) !important; }
+  div, span, button, svg { display: block !important; width: 300px !important; border: 3px dashed lime !important; }
+  [popover] { display: none !important; }
+  :popover-open { display: none !important; }
+  [role="status"] { visibility: hidden !important; opacity: 0 !important; }
+  body > *:last-child { display: none !important; }
+</style>
+</head>
+<body>
+  <div class="panel">
+    <button data-mode="full" data-kind="rejected">Полный: отклонены</button>
+    <button data-mode="full" data-kind="hidden">Полный: скрыт</button>
+    <button data-mode="dot" data-kind="rejected">Кружок</button>
+    <label><input type="checkbox" id="reduced"> reduced motion</label>
+    <label><input type="checkbox" id="dark"> тёмная страница</label>
+    <label><input type="checkbox" id="aggressive"> агрессивный CSS</label>
+    <div id="log"></div>
+  </div>
+  <article>
+    <h1>Тестовая страница</h1>
+    <p>Здесь проверяем тост CookieAway без сборки расширения. Тост появляется внизу по центру.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+    <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  </article>
+  <script src="build/harness.js"></script>
+</body>
+</html>

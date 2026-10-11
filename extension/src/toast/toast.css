@@ -1,0 +1,158 @@
+/* Host lives in the page's DOM: shadow-context !important beats any page rule. */
+:host {
+    all: initial !important;
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    overflow: visible !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    filter: none !important;
+    pointer-events: none !important;
+    z-index: 2147483647 !important;
+}
+
+.anchor {
+    all: initial;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    pointer-events: none;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 400;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+}
+
+svg {
+    display: block;
+    flex: none;
+}
+
+/* --- Pill ----------------------------------------------------------------------------------- */
+
+.pill {
+    all: initial;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: #1c1c1e;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+    transform-origin: center;
+    pointer-events: auto;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+}
+
+.pill:focus-visible {
+    outline: 2px solid #0a84ff;
+    outline-offset: 2px;
+}
+
+.dot .pill {
+    pointer-events: none;
+    cursor: default;
+}
+
+/* Content is laid out at its natural width and pinned left; the pill clips it while growing. */
+.content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: none;
+    height: 100%;
+    padding: 0 16px 0 10px;
+    white-space: nowrap;
+}
+
+.text {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.sep {
+    opacity: 0.5;
+}
+
+.edit {
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.confirm .sep,
+.confirm .edit {
+    display: none;
+}
+
+/* --- Popover -------------------------------------------------------------------------------- */
+
+.popover {
+    display: flex;
+    flex-direction: column;
+    padding: 6px;
+    border-radius: 12px;
+    background: #fff;
+    border: 0.5px solid rgba(0, 0, 0, 0.12);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+    color: #1c1c1e;
+    pointer-events: auto;
+}
+
+.popover[hidden] {
+    display: none;
+}
+
+.item {
+    all: initial;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font: inherit;
+    color: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.item:hover,
+.item:focus-visible {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+    .popover {
+        background: #2c2c2e;
+        border-color: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+        color: #fff;
+    }
+
+    .item:hover,
+    .item:focus-visible {
+        background: rgba(255, 255, 255, 0.1);
+    }
+}

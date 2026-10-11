@@ -1352,7 +1352,7 @@
     return excludeContainers(found.filter((element) => element.innerText?.trim()));
   }
   function getButtonData(el) {
-    const actionableButtons = excludeContainers(getButtonLikeElements(el)).filter(
+    const actionableButtons = excludeContainers(getButtonLikeElements(el).filter((b) => b instanceof HTMLElement)).filter(
       (b) => isElementVisible(b) && !isDisabled(b) && (b.innerText?.trim() || // <input> values do not appear in innerText
       b instanceof HTMLInputElement && ["submit", "button"].includes(b.type) && b.value?.trim())
     );
@@ -3361,6 +3361,406 @@
   };
   _config = /* @__PURE__ */ new WeakMap();
 
+  // src/consent-reset.js
+  var NAME_PREFIXES = [
+    // OneTrust
+    "OptanonConsent",
+    "OptanonAlertBoxClosed",
+    "OTAdditionalConsentString",
+    "eupubconsent",
+    // Cookiebot
+    "CookieConsent",
+    // Didomi
+    "didomi_",
+    // Usercentrics
+    "uc_",
+    "ucData",
+    "ucString",
+    // Sourcepoint
+    "_sp_",
+    "consentUUID",
+    "consentDate",
+    // Quantcast / InMobi
+    "_cmpRepromptHash",
+    "addtl_consent",
+    // TrustArc
+    "notice_",
+    "cmapi_",
+    // IAB TCF / US privacy, shared by many CMPs
+    "euconsent",
+    "usprivacy"
+  ];
+  var CONSENT_HINT = /consent|gdpr|notice|privacy|cookie|cmp|tcf/i;
+  var isKnownKey = (name) => NAME_PREFIXES.some((prefix) => name.startsWith(prefix));
+  function readCookies() {
+    const cookies = {};
+    for (const part of document.cookie.split(";")) {
+      const i = part.indexOf("=");
+      const name = (i < 0 ? part : part.slice(0, i)).trim();
+      if (name) {
+        cookies[name] = i < 0 ? "" : part.slice(i + 1);
+      }
+    }
+    return cookies;
+  }
+  function readStorage(name) {
+    try {
+      return { ...window[name] };
+    } catch {
+      return {};
+    }
+  }
+  var snapshot = () => ({ cookies: readCookies(), localStorage: readStorage("localStorage"), sessionStorage: readStorage("sessionStorage") });
+  var baseline = null;
+  function rememberConsentState() {
+    baseline = snapshot();
+  }
+  function keysToClear(current2, before) {
+    return Object.keys(current2).filter(
+      (name) => isKnownKey(name) || before && before[name] !== current2[name] && CONSENT_HINT.test(name)
+    );
+  }
+  function deleteCookie(name) {
+    const parts = location.hostname.split(".");
+    const domains = [""];
+    for (let i = 0; i < parts.length - 1; i++) {
+      domains.push(`; domain=.${parts.slice(i).join(".")}`);
+    }
+    for (const domain of domains) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${domain}`;
+    }
+  }
+  function resetConsent() {
+    const now = snapshot();
+    const cleared = keysToClear(now.cookies, baseline?.cookies);
+    cleared.forEach(deleteCookie);
+    for (const area of ["localStorage", "sessionStorage"]) {
+      for (const key of keysToClear(now[area], baseline?.[area])) {
+        try {
+          window[area].removeItem(key);
+          cleared.push(key);
+        } catch {
+        }
+      }
+    }
+    return cleared;
+  }
+
+  // src/toast/toast.css
+  var toast_default = "/* Host lives in the page's DOM: shadow-context !important beats any page rule. */\n:host {\n    all: initial !important;\n    display: block !important;\n    position: fixed !important;\n    inset: 0 !important;\n    width: auto !important;\n    height: auto !important;\n    margin: 0 !important;\n    padding: 0 !important;\n    border: 0 !important;\n    background: transparent !important;\n    overflow: visible !important;\n    opacity: 1 !important;\n    visibility: visible !important;\n    transform: none !important;\n    filter: none !important;\n    pointer-events: none !important;\n    z-index: 2147483647 !important;\n}\n\n.anchor {\n    all: initial;\n    position: absolute;\n    left: 0;\n    right: 0;\n    bottom: 24px;\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n    gap: 12px;\n    pointer-events: none;\n    font-family: -apple-system, BlinkMacSystemFont, sans-serif;\n    font-size: 13px;\n    line-height: 16px;\n    font-weight: 400;\n    color: #fff;\n    -webkit-font-smoothing: antialiased;\n}\n\nsvg {\n    display: block;\n    flex: none;\n}\n\n/* --- Pill ----------------------------------------------------------------------------------- */\n\n.pill {\n    all: initial;\n    box-sizing: border-box;\n    display: flex;\n    align-items: center;\n    justify-content: flex-start;\n    width: 36px;\n    height: 36px;\n    border-radius: 999px;\n    background: #1c1c1e;\n    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);\n    overflow: hidden;\n    transform-origin: center;\n    pointer-events: auto;\n    cursor: pointer;\n    font: inherit;\n    color: inherit;\n}\n\n.pill:focus-visible {\n    outline: 2px solid #0a84ff;\n    outline-offset: 2px;\n}\n\n.dot .pill {\n    pointer-events: none;\n    cursor: default;\n}\n\n/* Content is laid out at its natural width and pinned left; the pill clips it while growing. */\n.content {\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    flex: none;\n    height: 100%;\n    padding: 0 16px 0 10px;\n    white-space: nowrap;\n}\n\n.text {\n    display: flex;\n    align-items: center;\n    gap: 5px;\n}\n\n.sep {\n    opacity: 0.5;\n}\n\n.edit {\n    font-weight: 500;\n    text-decoration: underline;\n    text-underline-offset: 3px;\n}\n\n.confirm .sep,\n.confirm .edit {\n    display: none;\n}\n\n/* --- Popover -------------------------------------------------------------------------------- */\n\n.popover {\n    display: flex;\n    flex-direction: column;\n    padding: 6px;\n    border-radius: 12px;\n    background: #fff;\n    border: 0.5px solid rgba(0, 0, 0, 0.12);\n    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);\n    color: #1c1c1e;\n    pointer-events: auto;\n}\n\n.popover[hidden] {\n    display: none;\n}\n\n.item {\n    all: initial;\n    box-sizing: border-box;\n    display: flex;\n    align-items: center;\n    gap: 8px;\n    padding: 8px 10px;\n    border-radius: 6px;\n    font: inherit;\n    color: inherit;\n    white-space: nowrap;\n    cursor: pointer;\n}\n\n.item:hover,\n.item:focus-visible {\n    background: rgba(0, 0, 0, 0.06);\n}\n\n@media (prefers-color-scheme: dark) {\n    .popover {\n        background: #2c2c2e;\n        border-color: rgba(255, 255, 255, 0.12);\n        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);\n        color: #fff;\n    }\n\n    .item:hover,\n    .item:focus-visible {\n        background: rgba(255, 255, 255, 0.1);\n    }\n}\n";
+
+  // src/toast/toast.js
+  var TEXT = {
+    rejected: "\u041A\u0443\u043A\u0438 \u043E\u0442\u043A\u043B\u043E\u043D\u0435\u043D\u044B",
+    hidden: "\u041A\u0443\u043A\u0438-\u0431\u0430\u043D\u043D\u0435\u0440 \u0441\u043A\u0440\u044B\u0442"
+  };
+  var CONFIRM = {
+    skipOnce: "\u0411\u0430\u043D\u043D\u0435\u0440 \u043F\u043E\u043A\u0430\u0437\u0430\u043D",
+    whitelist: "\u0421\u0430\u0439\u0442 \u0432 \u0438\u0441\u043A\u043B\u044E\u0447\u0435\u043D\u0438\u044F\u0445"
+  };
+  var HOLD_FULL = 3e3;
+  var HOLD_DOT = 900;
+  var CONFIRM_MS = 2e3;
+  var CIRCLE = 36;
+  var POP = "cubic-bezier(0.34, 1.9, 0.64, 1)";
+  var POP_ICON = "cubic-bezier(0.34, 2.2, 0.64, 1)";
+  var EXPAND = "cubic-bezier(0.34, 1.6, 0.64, 1)";
+  var COLLAPSE = "cubic-bezier(0.5, 0, 0.75, 0)";
+  var COOKIE_ICON = `
+<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+  <mask id="bite"><rect width="16" height="16" fill="#fff"/><circle cx="14.2" cy="2.4" r="3.4" fill="#000"/></mask>
+  <circle cx="8" cy="8.2" r="7" fill="#e0a55c" mask="url(#bite)"/>
+  <circle cx="5.2" cy="6" r="1.15" fill="#6b3f1d"/>
+  <circle cx="9.4" cy="9.6" r="1.15" fill="#6b3f1d"/>
+  <circle cx="5.4" cy="11.2" r="0.95" fill="#6b3f1d"/>
+  <circle cx="11.6" cy="6.3" r="0.8" fill="#6b3f1d"/>
+</svg>`;
+  var EYE_ICON = `
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+  <path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8s-2.4 4.5-6.5 4.5S1.5 8 1.5 8z"/>
+  <circle cx="8" cy="8" r="2"/>
+</svg>`;
+  var PAUSE_ICON = `
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+  <circle cx="8" cy="8" r="6.3"/>
+  <path d="M3.6 3.6l8.8 8.8"/>
+</svg>`;
+  var TEMPLATE = `
+<div class="anchor">
+  <div class="popover" role="menu" hidden>
+    <button class="item" role="menuitem" data-action="skipOnce">${EYE_ICON}<span>\u041F\u043E\u043A\u0430\u0437\u0430\u0442\u044C \u0431\u0430\u043D\u043D\u0435\u0440 \u0441\u0430\u0439\u0442\u0430</span></button>
+    <button class="item" role="menuitem" data-action="whitelist">${PAUSE_ICON}<span>\u041D\u0435 \u0442\u0440\u043E\u0433\u0430\u0442\u044C \u044D\u0442\u043E\u0442 \u0441\u0430\u0439\u0442</span></button>
+  </div>
+  <button class="pill" aria-haspopup="menu" aria-expanded="false">
+    <span class="content">
+      <span class="icon">${COOKIE_ICON}</span>
+      <span class="text"><span class="label"></span><span class="sep">\xB7</span><span class="edit">\u0418\u0437\u043C\u0435\u043D\u0438\u0442\u044C</span></span>
+    </span>
+  </button>
+</div>`;
+  var wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  function run(el, from, to, options) {
+    Object.assign(el.style, to);
+    return el.animate([from, to], { fill: "backwards", ...options }).finished.catch(() => {
+    });
+  }
+  var current = null;
+  function showToast(opts) {
+    current?.destroy();
+    current = new Toast(opts);
+    return current;
+  }
+  var Toast = class {
+    constructor({ mode = "full", kind = "rejected", onAction: onAction2, afterAction, reducedMotion, openShadow }) {
+      this.openShadow = openShadow;
+      this.mode = mode;
+      this.kind = kind;
+      this.onAction = onAction2;
+      this.afterAction = afterAction;
+      this.reduced = reducedMotion ?? matchMedia("(prefers-reduced-motion: reduce)").matches;
+      this.alive = true;
+      this.hovered = false;
+      this.popoverOpen = false;
+      this.action = null;
+      this.mount();
+      this.play();
+    }
+    mount() {
+      const host = document.createElement("cookieaway-toast");
+      host.setAttribute("role", "status");
+      host.setAttribute("aria-live", "polite");
+      const root = host.attachShadow({ mode: this.openShadow ? "open" : "closed" });
+      root.innerHTML = `<style>${toast_default}</style>${TEMPLATE}`;
+      this.host = host;
+      this.root = root;
+      this.anchor = root.querySelector(".anchor");
+      this.pill = root.querySelector(".pill");
+      this.content = root.querySelector(".content");
+      this.icon = root.querySelector(".icon");
+      this.text = root.querySelector(".text");
+      this.label = root.querySelector(".label");
+      this.popover = root.querySelector(".popover");
+      if (this.mode === "dot") {
+        this.anchor.classList.add("dot");
+        this.pill.tabIndex = -1;
+        this.pill.setAttribute("aria-hidden", "true");
+      }
+      this.pill.addEventListener("pointerenter", () => this.setHovered(true));
+      this.pill.addEventListener("pointerleave", () => this.setHovered(false));
+      this.pill.addEventListener("click", () => this.popoverOpen ? this.closePopover() : this.openPopover());
+      this.popover.addEventListener("click", (e) => {
+        const item = e.target.closest("[data-action]");
+        if (item) {
+          this.choose(item.dataset.action);
+        }
+      });
+      this.onOutsidePointer = (e) => {
+        if (!e.composedPath().includes(host)) {
+          this.closePopover();
+        }
+      };
+      this.onKey = (e) => this.handleKey(e);
+      document.documentElement.append(host);
+      if (typeof host.showPopover === "function") {
+        host.popover = "manual";
+        try {
+          host.showPopover();
+        } catch {
+        }
+      }
+    }
+    destroy() {
+      this.alive = false;
+      this.closePopover();
+      clearTimeout(this.holdTimer);
+      this.host.remove();
+      if (current === this) {
+        current = null;
+      }
+    }
+    async play() {
+      this.label.textContent = TEXT[this.kind] ?? TEXT.rejected;
+      if (this.reduced) {
+        await this.appearReduced();
+      } else if (this.mode === "dot") {
+        await this.appearCircle();
+      } else {
+        await this.appearFull();
+      }
+      if (!this.alive) return;
+      await this.hold(this.mode === "dot" ? HOLD_DOT : HOLD_FULL);
+      if (!this.alive) return;
+      if (this.action) {
+        await this.confirmAction();
+        if (!this.alive) return;
+      }
+      if (this.reduced) {
+        await run(this.anchor, { opacity: 1 }, { opacity: 0 }, { duration: 300, easing: "ease-in" });
+      } else if (this.mode === "dot") {
+        await this.vanishCircle();
+      } else {
+        await this.disappearFull();
+      }
+      const action = this.action?.name;
+      this.destroy();
+      if (action) {
+        this.afterAction?.(action);
+      }
+    }
+    // --- Appear / disappear ----------------------------------------------------------------
+    appearCircle() {
+      this.icon.style.opacity = "0";
+      return Promise.all([
+        run(this.pill, { transform: "scale(0)", opacity: 0 }, { transform: "scale(1)", opacity: 1 }, { duration: 320, easing: POP }),
+        run(
+          this.icon,
+          { transform: "scale(.4) rotate(-40deg)", opacity: 0 },
+          { transform: "scale(1) rotate(0deg)", opacity: 1 },
+          { duration: 384, delay: 80, easing: POP_ICON }
+        )
+      ]);
+    }
+    async appearFull() {
+      this.text.style.opacity = "0";
+      const circle = this.appearCircle();
+      await wait(320 + 250);
+      if (!this.alive) return;
+      const width = this.content.offsetWidth;
+      await Promise.all([
+        circle,
+        run(this.pill, { width: `${CIRCLE}px` }, { width: `${width}px` }, { duration: 450, easing: EXPAND }),
+        run(this.text, { opacity: 0 }, { opacity: 1 }, { duration: 220, delay: 140, easing: "ease-out" }),
+        run(this.text, { translate: "-6px 0" }, { translate: "0 0" }, { duration: 280, delay: 140, easing: "ease-out" })
+      ]);
+    }
+    async appearReduced() {
+      if (this.mode === "full") {
+        this.pill.style.width = `${this.content.offsetWidth}px`;
+      }
+      await run(this.anchor, { opacity: 0 }, { opacity: 1 }, { duration: 250, easing: "ease-out" });
+    }
+    vanishCircle() {
+      return Promise.all([
+        run(this.pill, { transform: "scale(1)", opacity: 1 }, { transform: "scale(.6)", opacity: 0 }, { duration: 180, easing: "ease-in" }),
+        run(this.icon, { transform: "rotate(0deg) scale(1)" }, { transform: "rotate(20deg) scale(.6)" }, { duration: 180, easing: "ease-in" })
+      ]);
+    }
+    async disappearFull() {
+      const width = this.pill.getBoundingClientRect().width;
+      await Promise.all([
+        run(this.text, { opacity: 1, translate: "0 0" }, { opacity: 0, translate: "-6px 0" }, { duration: 150, easing: "ease-in" }),
+        run(this.pill, { width: `${width}px` }, { width: `${CIRCLE}px` }, { duration: 300, delay: 60, easing: COLLAPSE })
+      ]);
+      if (!this.alive) return;
+      await this.vanishCircle();
+    }
+    // --- Hold timer (paused on hover, while the popover is open, while an action runs) -----
+    hold(ms) {
+      if (this.action) return Promise.resolve();
+      return new Promise((resolve) => {
+        this.holdLeft = ms;
+        this.holdDone = resolve;
+        this.updateHold();
+      });
+    }
+    endHold() {
+      clearTimeout(this.holdTimer);
+      this.holdTimer = null;
+      const done = this.holdDone;
+      this.holdDone = null;
+      done?.();
+    }
+    updateHold() {
+      if (!this.holdDone) return;
+      const paused = this.hovered || this.popoverOpen;
+      if (paused && this.holdTimer) {
+        clearTimeout(this.holdTimer);
+        this.holdTimer = null;
+        this.holdLeft -= performance.now() - this.holdStart;
+      } else if (!paused && !this.holdTimer) {
+        this.holdStart = performance.now();
+        this.holdTimer = setTimeout(() => this.endHold(), Math.max(0, this.holdLeft));
+      }
+    }
+    setHovered(hovered) {
+      this.hovered = hovered;
+      this.updateHold();
+    }
+    // --- Popover ---------------------------------------------------------------------------
+    openPopover() {
+      if (this.popoverOpen || this.action || this.mode === "dot") return;
+      this.popoverOpen = true;
+      this.updateHold();
+      this.popover.hidden = false;
+      this.pill.setAttribute("aria-expanded", "true");
+      run(this.popover, { opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "translateY(0)" }, { duration: 180, easing: "ease-out" });
+      this.popover.querySelector(".item").focus();
+      addEventListener("pointerdown", this.onOutsidePointer, true);
+      addEventListener("keydown", this.onKey, true);
+    }
+    closePopover({ focusPill = false } = {}) {
+      if (!this.popoverOpen) return;
+      this.popoverOpen = false;
+      this.popover.hidden = true;
+      this.pill.setAttribute("aria-expanded", "false");
+      removeEventListener("pointerdown", this.onOutsidePointer, true);
+      removeEventListener("keydown", this.onKey, true);
+      if (focusPill) {
+        this.pill.focus();
+      }
+      this.updateHold();
+    }
+    handleKey(e) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        this.closePopover({ focusPill: true });
+      } else if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        e.stopPropagation();
+        const items = [...this.popover.querySelectorAll(".item")];
+        const index = items.indexOf(this.root.activeElement);
+        const next = (index + (e.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+        items[next].focus();
+      }
+    }
+    // --- Actions ---------------------------------------------------------------------------
+    choose(name) {
+      if (this.action) return;
+      this.action = { name, done: Promise.resolve(this.onAction?.(name)) };
+      this.closePopover();
+      this.pill.blur();
+      this.endHold();
+    }
+    async confirmAction() {
+      try {
+        await this.action.done;
+      } catch (e) {
+        console.error("[CookieAway] action failed", e);
+        this.action = null;
+        return;
+      }
+      if (!this.alive) return;
+      if (this.reduced) {
+        this.anchor.classList.add("confirm");
+        this.label.textContent = CONFIRM[this.action.name];
+        this.pill.style.width = `${this.content.offsetWidth}px`;
+      } else {
+        await run(this.text, { opacity: 1 }, { opacity: 0 }, { duration: 120, easing: "ease-in" });
+        if (!this.alive) return;
+        const from = this.pill.getBoundingClientRect().width;
+        this.anchor.classList.add("confirm");
+        this.label.textContent = CONFIRM[this.action.name];
+        const to = this.content.offsetWidth;
+        await Promise.all([
+          run(this.pill, { width: `${from}px` }, { width: `${to}px` }, { duration: 300, easing: EXPAND }),
+          run(this.text, { opacity: 0 }, { opacity: 1 }, { duration: 200, delay: 60, easing: "ease-out" })
+        ]);
+      }
+      await wait(CONFIRM_MS);
+    }
+  };
+
   // src/content.js
   var DEBUG_TIMING = true;
   var isTop = window === window.top;
@@ -3369,6 +3769,7 @@
   var timing = (...args) => DEBUG_TIMING && console.log(`[CookieAway] ${t()} ${where}:`, ...args);
   if (isTop) {
     console.log("[CookieAway] content script on", location.hostname);
+    rememberConsentState();
   }
   timing("content script start, readyState =", document.readyState);
   if (DEBUG_TIMING && isTop) {
@@ -3379,16 +3780,57 @@
     }).observe({ type: "paint", buffered: true });
     document.addEventListener("DOMContentLoaded", () => timing("DOMContentLoaded"));
   }
+  var lastState = "";
+  function logState(state) {
+    const summary = JSON.stringify({
+      lifecycle: state.lifecycle,
+      attempts: state.findCmpAttempts,
+      cmps: state.detectedCmps,
+      popups: state.detectedPopups,
+      heuristic: state.heuristicPatterns,
+      clicks: state.clicks
+    });
+    if (summary !== lastState) {
+      lastState = summary;
+      timing("state", summary);
+    }
+  }
   var consent = new AutoConsent((msg) => {
-    if (["init", "popupFound", "optOutResult", "autoconsentDone"].includes(msg.type)) {
-      timing("send", msg.type, msg.cmp ?? "");
+    if (["init", "popupFound", "optOutResult", "autoconsentDone", "autoconsentError"].includes(msg.type)) {
+      timing("send", msg.type, msg.cmp ?? msg.details ?? "");
+    }
+    if (DEBUG_TIMING && isTop && msg.type === "report") {
+      logState(msg.state);
+    }
+    if (msg.type === "optOutResult" && msg.result) {
+      keepHidden(consent.foundCmp?.prehideSelectors);
     }
     return browser.runtime.sendMessage(msg);
   });
+  function keepHidden(selectors, ms = 1500) {
+    if (!selectors?.length) return;
+    const style = document.createElement("style");
+    style.textContent = `${selectors.join(",")} { opacity: 0 !important; pointer-events: none !important; }`;
+    (document.head || document.documentElement).append(style);
+    setTimeout(() => style.remove(), ms);
+  }
   browser.runtime.onMessage.addListener((message) => {
+    if (message.type === "cookieaway:toast") {
+      timing("toast", message.mode, message.kind, message.site);
+      if (isTop) {
+        showToast({ mode: message.mode, kind: message.kind, onAction, afterAction: () => location.reload() });
+      }
+      return;
+    }
     if (message.type === "initResp") {
       timing("initResp received");
     }
     return Promise.resolve(consent.receiveMessageCallback(message));
   });
+  async function onAction(action) {
+    await browser.runtime.sendMessage({ type: `cookieaway:${action}` });
+    if (action === "skipOnce") {
+      timing("cleared consent keys", resetConsent());
+    }
+  }
 })();
