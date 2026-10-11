@@ -1,0 +1,897 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 110;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		409F176A307C17CA00E574A4 /* CookieAway Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 409F1769307C17CA00E574A4 /* CookieAway Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		409F1774307C17CA00E574A4 /* CookieAway Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 409F1773307C17CA00E574A4 /* CookieAway Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		409F176B307C17CA00E574A4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 409F1730307C17C800E574A4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 409F1768307C17CA00E574A4;
+			remoteInfo = "CookieAway Extension (iOS)";
+		};
+		409F1775307C17CA00E574A4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 409F1730307C17C800E574A4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 409F1772307C17CA00E574A4;
+			remoteInfo = "CookieAway Extension (macOS)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		409F179C307C17CA00E574A4 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				409F176A307C17CA00E574A4 /* CookieAway Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+		409F17A6307C17CA00E574A4 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				409F1774307C17CA00E574A4 /* CookieAway Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		409F174C307C17CA00E574A4 /* CookieAway.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CookieAway.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		409F175E307C17CA00E574A4 /* CookieAway.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CookieAway.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		409F1769307C17CA00E574A4 /* CookieAway Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "CookieAway Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		409F1773307C17CA00E574A4 /* CookieAway Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "CookieAway Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		409F1797307C17CA00E574A4 /* Exceptions for "Shared (App)" folder in "CookieAway (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"/Localized: Resources/Main.html",
+				Assets.xcassets,
+				Resources/Icon.png,
+				Resources/Script.js,
+				Resources/Style.css,
+				ViewController.swift,
+			);
+			target = 409F174B307C17CA00E574A4 /* CookieAway (iOS) */;
+		};
+		409F179B307C17CA00E574A4 /* Exceptions for "iOS (Extension)" folder in "CookieAway Extension (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 409F1768307C17CA00E574A4 /* CookieAway Extension (iOS) */;
+		};
+		409F17A0307C17CA00E574A4 /* Exceptions for "iOS (App)" folder in "CookieAway (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 409F174B307C17CA00E574A4 /* CookieAway (iOS) */;
+		};
+		409F17A1307C17CA00E574A4 /* Exceptions for "Shared (App)" folder in "CookieAway (macOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"/Localized: Resources/Main.html",
+				Assets.xcassets,
+				Resources/Icon.png,
+				Resources/Script.js,
+				Resources/Style.css,
+				ViewController.swift,
+			);
+			target = 409F175D307C17CA00E574A4 /* CookieAway (macOS) */;
+		};
+		409F17A5307C17CA00E574A4 /* Exceptions for "macOS (Extension)" folder in "CookieAway Extension (macOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 409F1772307C17CA00E574A4 /* CookieAway Extension (macOS) */;
+		};
+		409F17AA307C17CA00E574A4 /* Exceptions for "Shared (Extension)" folder in "CookieAway Extension (iOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/_locales,
+				Resources/background.js,
+				Resources/content.js,
+				Resources/images,
+				Resources/manifest.json,
+				Resources/popup.css,
+				Resources/popup.html,
+				Resources/popup.js,
+				SafariWebExtensionHandler.swift,
+			);
+			target = 409F1768307C17CA00E574A4 /* CookieAway Extension (iOS) */;
+		};
+		409F17AB307C17CA00E574A4 /* Exceptions for "Shared (Extension)" folder in "CookieAway Extension (macOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/_locales,
+				Resources/background.js,
+				Resources/content.js,
+				Resources/images,
+				Resources/manifest.json,
+				Resources/popup.css,
+				Resources/popup.html,
+				Resources/popup.js,
+				SafariWebExtensionHandler.swift,
+			);
+			target = 409F1772307C17CA00E574A4 /* CookieAway Extension (macOS) */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		409F1734307C17C800E574A4 /* Shared (App) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				409F1797307C17CA00E574A4 /* Exceptions for "Shared (App)" folder in "CookieAway (iOS)" target */,
+				409F17A1307C17CA00E574A4 /* Exceptions for "Shared (App)" folder in "CookieAway (macOS)" target */,
+			);
+			path = "Shared (App)";
+			sourceTree = "<group>";
+		};
+		409F173D307C17CA00E574A4 /* Shared (Extension) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				409F17AA307C17CA00E574A4 /* Exceptions for "Shared (Extension)" folder in "CookieAway Extension (iOS)" target */,
+				409F17AB307C17CA00E574A4 /* Exceptions for "Shared (Extension)" folder in "CookieAway Extension (macOS)" target */,
+			);
+			explicitFolders = (
+				Resources/_locales,
+				Resources/images,
+			);
+			path = "Shared (Extension)";
+			sourceTree = "<group>";
+		};
+		409F174E307C17CA00E574A4 /* iOS (App) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				409F17A0307C17CA00E574A4 /* Exceptions for "iOS (App)" folder in "CookieAway (iOS)" target */,
+			);
+			path = "iOS (App)";
+			sourceTree = "<group>";
+		};
+		409F175F307C17CA00E574A4 /* macOS (App) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "macOS (App)";
+			sourceTree = "<group>";
+		};
+		409F176D307C17CA00E574A4 /* iOS (Extension) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				409F179B307C17CA00E574A4 /* Exceptions for "iOS (Extension)" folder in "CookieAway Extension (iOS)" target */,
+			);
+			path = "iOS (Extension)";
+			sourceTree = "<group>";
+		};
+		409F1777307C17CA00E574A4 /* macOS (Extension) */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				409F17A5307C17CA00E574A4 /* Exceptions for "macOS (Extension)" folder in "CookieAway Extension (macOS)" target */,
+			);
+			path = "macOS (Extension)";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		409F1749307C17CA00E574A4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		409F175B307C17CA00E574A4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		409F1766307C17CA00E574A4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		409F1770307C17CA00E574A4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		409F172F307C17C800E574A4 = {
+			isa = PBXGroup;
+			children = (
+				409F1734307C17C800E574A4 /* Shared (App) */,
+				409F173D307C17CA00E574A4 /* Shared (Extension) */,
+				409F174E307C17CA00E574A4 /* iOS (App) */,
+				409F175F307C17CA00E574A4 /* macOS (App) */,
+				409F176D307C17CA00E574A4 /* iOS (Extension) */,
+				409F1777307C17CA00E574A4 /* macOS (Extension) */,
+				409F174D307C17CA00E574A4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		409F174D307C17CA00E574A4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				409F174C307C17CA00E574A4 /* CookieAway.app */,
+				409F175E307C17CA00E574A4 /* CookieAway.app */,
+				409F1769307C17CA00E574A4 /* CookieAway Extension.appex */,
+				409F1773307C17CA00E574A4 /* CookieAway Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		409F174B307C17CA00E574A4 /* CookieAway (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 409F179D307C17CA00E574A4 /* Build configuration list for PBXNativeTarget "CookieAway (iOS)" */;
+			buildPhases = (
+				409F1748307C17CA00E574A4 /* Sources */,
+				409F1749307C17CA00E574A4 /* Frameworks */,
+				409F174A307C17CA00E574A4 /* Resources */,
+				409F179C307C17CA00E574A4 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				409F176C307C17CA00E574A4 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				409F174E307C17CA00E574A4 /* iOS (App) */,
+			);
+			name = "CookieAway (iOS)";
+			productName = "CookieAway (iOS)";
+			productReference = 409F174C307C17CA00E574A4 /* CookieAway.app */;
+			productType = "com.apple.product-type.application";
+		};
+		409F175D307C17CA00E574A4 /* CookieAway (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 409F17A7307C17CA00E574A4 /* Build configuration list for PBXNativeTarget "CookieAway (macOS)" */;
+			buildPhases = (
+				409F175A307C17CA00E574A4 /* Sources */,
+				409F175B307C17CA00E574A4 /* Frameworks */,
+				409F175C307C17CA00E574A4 /* Resources */,
+				409F17A6307C17CA00E574A4 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				409F1776307C17CA00E574A4 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				409F175F307C17CA00E574A4 /* macOS (App) */,
+			);
+			name = "CookieAway (macOS)";
+			productName = "CookieAway (macOS)";
+			productReference = 409F175E307C17CA00E574A4 /* CookieAway.app */;
+			productType = "com.apple.product-type.application";
+		};
+		409F1768307C17CA00E574A4 /* CookieAway Extension (iOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 409F1798307C17CA00E574A4 /* Build configuration list for PBXNativeTarget "CookieAway Extension (iOS)" */;
+			buildPhases = (
+				409F1765307C17CA00E574A4 /* Sources */,
+				409F1766307C17CA00E574A4 /* Frameworks */,
+				409F1767307C17CA00E574A4 /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				409F176D307C17CA00E574A4 /* iOS (Extension) */,
+			);
+			name = "CookieAway Extension (iOS)";
+			productName = "CookieAway Extension (iOS)";
+			productReference = 409F1769307C17CA00E574A4 /* CookieAway Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		409F1772307C17CA00E574A4 /* CookieAway Extension (macOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 409F17A2307C17CA00E574A4 /* Build configuration list for PBXNativeTarget "CookieAway Extension (macOS)" */;
+			buildPhases = (
+				409F176F307C17CA00E574A4 /* Sources */,
+				409F1770307C17CA00E574A4 /* Frameworks */,
+				409F1771307C17CA00E574A4 /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				409F1777307C17CA00E574A4 /* macOS (Extension) */,
+			);
+			name = "CookieAway Extension (macOS)";
+			productName = "CookieAway Extension (macOS)";
+			productReference = 409F1773307C17CA00E574A4 /* CookieAway Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		409F1730307C17C800E574A4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2700;
+				LastUpgradeCheck = 2700;
+				TargetAttributes = {
+					409F174B307C17CA00E574A4 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					409F175D307C17CA00E574A4 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					409F1768307C17CA00E574A4 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+					409F1772307C17CA00E574A4 = {
+						CreatedOnToolsVersion = 27.0;
+					};
+				};
+			};
+			buildConfigurationList = 409F1733307C17C800E574A4 /* Build configuration list for PBXProject "CookieAway" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 409F172F307C17C800E574A4;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 409F174D307C17CA00E574A4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				409F174B307C17CA00E574A4 /* CookieAway (iOS) */,
+				409F175D307C17CA00E574A4 /* CookieAway (macOS) */,
+				409F1768307C17CA00E574A4 /* CookieAway Extension (iOS) */,
+				409F1772307C17CA00E574A4 /* CookieAway Extension (macOS) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		409F174A307C17CA00E574A4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		409F175C307C17CA00E574A4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		409F1767307C17CA00E574A4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		409F1771307C17CA00E574A4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		409F1748307C17CA00E574A4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		409F175A307C17CA00E574A4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		409F1765307C17CA00E574A4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+		409F176F307C17CA00E574A4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		409F176C307C17CA00E574A4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 409F1768307C17CA00E574A4 /* CookieAway Extension (iOS) */;
+			targetProxy = 409F176B307C17CA00E574A4 /* PBXContainerItemProxy */;
+		};
+		409F1776307C17CA00E574A4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 409F1772307C17CA00E574A4 /* CookieAway Extension (macOS) */;
+			targetProxy = 409F1775307C17CA00E574A4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		409F1799307C17CA00E574A4 /* Debug configuration for PBXNativeTarget "CookieAway Extension (iOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D253Z5ZA3Y;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "CookieAway Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fir.CookieAway.Extension;
+				PRODUCT_NAME = "CookieAway Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		409F179A307C17CA00E574A4 /* Release configuration for PBXNativeTarget "CookieAway Extension (iOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D253Z5ZA3Y;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "CookieAway Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fir.CookieAway.Extension;
+				PRODUCT_NAME = "CookieAway Extension";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		409F179E307C17CA00E574A4 /* Debug configuration for PBXNativeTarget "CookieAway (iOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D253Z5ZA3Y;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = CookieAway;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fir.CookieAway;
+				PRODUCT_NAME = CookieAway;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		409F179F307C17CA00E574A4 /* Release configuration for PBXNativeTarget "CookieAway (iOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D253Z5ZA3Y;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "iOS (App)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = CookieAway;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fir.CookieAway;
+				PRODUCT_NAME = CookieAway;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		409F17A3307C17CA00E574A4 /* Debug configuration for PBXNativeTarget "CookieAway Extension (macOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D253Z5ZA3Y;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "CookieAway Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fir.CookieAway.Extension;
+				PRODUCT_NAME = "CookieAway Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		409F17A4307C17CA00E574A4 /* Release configuration for PBXNativeTarget "CookieAway Extension (macOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D253Z5ZA3Y;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (Extension)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "CookieAway Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fir.CookieAway.Extension;
+				PRODUCT_NAME = "CookieAway Extension";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		409F17A8307C17CA00E574A4 /* Debug configuration for PBXNativeTarget "CookieAway (macOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D253Z5ZA3Y;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = CookieAway;
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fir.CookieAway;
+				PRODUCT_NAME = CookieAway;
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		409F17A9307C17CA00E574A4 /* Release configuration for PBXNativeTarget "CookieAway (macOS)" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D253Z5ZA3Y;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = CookieAway;
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.fir.CookieAway;
+				PRODUCT_NAME = CookieAway;
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		409F17AC307C17CA00E574A4 /* Debug configuration for PBXProject "CookieAway" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = D253Z5ZA3Y;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		409F17AD307C17CA00E574A4 /* Release configuration for PBXProject "CookieAway" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = D253Z5ZA3Y;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		409F1733307C17C800E574A4 /* Build configuration list for PBXProject "CookieAway" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				409F17AC307C17CA00E574A4 /* Debug configuration for PBXProject "CookieAway" */,
+				409F17AD307C17CA00E574A4 /* Release configuration for PBXProject "CookieAway" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		409F1798307C17CA00E574A4 /* Build configuration list for PBXNativeTarget "CookieAway Extension (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				409F1799307C17CA00E574A4 /* Debug configuration for PBXNativeTarget "CookieAway Extension (iOS)" */,
+				409F179A307C17CA00E574A4 /* Release configuration for PBXNativeTarget "CookieAway Extension (iOS)" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		409F179D307C17CA00E574A4 /* Build configuration list for PBXNativeTarget "CookieAway (iOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				409F179E307C17CA00E574A4 /* Debug configuration for PBXNativeTarget "CookieAway (iOS)" */,
+				409F179F307C17CA00E574A4 /* Release configuration for PBXNativeTarget "CookieAway (iOS)" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		409F17A2307C17CA00E574A4 /* Build configuration list for PBXNativeTarget "CookieAway Extension (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				409F17A3307C17CA00E574A4 /* Debug configuration for PBXNativeTarget "CookieAway Extension (macOS)" */,
+				409F17A4307C17CA00E574A4 /* Release configuration for PBXNativeTarget "CookieAway Extension (macOS)" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		409F17A7307C17CA00E574A4 /* Build configuration list for PBXNativeTarget "CookieAway (macOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				409F17A8307C17CA00E574A4 /* Debug configuration for PBXNativeTarget "CookieAway (macOS)" */,
+				409F17A9307C17CA00E574A4 /* Release configuration for PBXNativeTarget "CookieAway (macOS)" */,
+			);
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 409F1730307C17C800E574A4 /* Project object */;
+	validationLevel = 1;
+}
