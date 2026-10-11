@@ -5,7 +5,7 @@ const TEXT = {
     hidden: 'Куки-баннер скрыт',
 };
 const CONFIRM = {
-    skipOnce: 'Баннер показан',
+    skipOnce: 'Покажем после перезагрузки',
     whitelist: 'Сайт в исключениях',
 };
 
