@@ -1985,14 +1985,14 @@
         const toggles = document.querySelectorAll(
           ".priv-purpose-container .sp-switch-arrow-block a.neutral.on .right"
         );
-        for (const t2 of toggles) {
-          t2.click();
+        for (const t of toggles) {
+          t.click();
         }
         const switches = document.querySelectorAll(
           ".priv-purpose-container .sp-switch-arrow-block a.switch-bg.on"
         );
-        for (const t2 of switches) {
-          t2.click();
+        for (const t of switches) {
+          t.click();
         }
         return await this.click(".priv-save-btn");
       }
@@ -3811,46 +3811,11 @@
   };
 
   // src/content.js
-  var DEBUG_TIMING = true;
   var isTop = window === window.top;
-  var where = isTop ? "top" : `frame ${location.hostname}`;
-  var t = () => `${Math.round(performance.now())}ms`;
-  var timing = (...args) => DEBUG_TIMING && console.log(`[CookieAway] ${t()} ${where}:`, ...args);
   if (isTop) {
-    console.log("[CookieAway] content script on", location.hostname);
     rememberConsentState();
   }
-  timing("content script start, readyState =", document.readyState);
-  if (DEBUG_TIMING && isTop) {
-    new PerformanceObserver((list) => {
-      for (const entry of list.getEntries()) {
-        console.log(`[CookieAway] ${Math.round(entry.startTime)}ms top: paint ${entry.name}`);
-      }
-    }).observe({ type: "paint", buffered: true });
-    document.addEventListener("DOMContentLoaded", () => timing("DOMContentLoaded"));
-  }
-  var lastState = "";
-  function logState(state) {
-    const summary = JSON.stringify({
-      lifecycle: state.lifecycle,
-      attempts: state.findCmpAttempts,
-      cmps: state.detectedCmps,
-      popups: state.detectedPopups,
-      heuristic: state.heuristicPatterns,
-      clicks: state.clicks
-    });
-    if (summary !== lastState) {
-      lastState = summary;
-      timing("state", summary);
-    }
-  }
   var consent = new AutoConsent((msg) => {
-    if (["init", "popupFound", "optOutResult", "autoconsentDone", "autoconsentError"].includes(msg.type)) {
-      timing("send", msg.type, msg.cmp ?? msg.details ?? "");
-    }
-    if (DEBUG_TIMING && isTop && msg.type === "report") {
-      logState(msg.state);
-    }
     if (msg.type === "optOutResult" && msg.result) {
       keepHidden(consent.foundCmp?.prehideSelectors);
     }
@@ -3865,21 +3830,17 @@
   }
   browser.runtime.onMessage.addListener((message) => {
     if (message.type === "cookieaway:toast") {
-      timing("toast", message.mode, message.kind, message.site);
       if (isTop) {
         showToast({ mode: message.mode, kind: message.kind, onAction, afterAction: () => location.reload() });
       }
       return;
-    }
-    if (message.type === "initResp") {
-      timing("initResp received");
     }
     return Promise.resolve(consent.receiveMessageCallback(message));
   });
   async function onAction(action) {
     await browser.runtime.sendMessage({ type: `cookieaway:${action}` });
     if (action === "skipOnce") {
-      timing("cleared consent keys", resetConsent());
+      resetConsent();
     }
   }
 })();

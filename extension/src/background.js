@@ -15,8 +15,8 @@ const config = {
     // the prehide is lifted before we click and the banner flashes.
     prehideTimeout: 6000,
     logs: {
-        lifecycle: true,
-        rulesteps: true,
+        lifecycle: false,
+        rulesteps: false,
         detectionsteps: false,
         evals: false,
         errors: true,
@@ -92,7 +92,7 @@ async function isEnabledForFrame(tabId, frameId, site) {
 
 async function onConsentDone(tabId, site, isCosmetic) {
     if (pagesDone.has(tabId)) {
-        return null;
+        return;
     }
     pagesDone.add(tabId);
     await updateStorage('local', 'rejectedCount', 0, (n) => ({ value: n + 1 }));
@@ -101,7 +101,6 @@ async function onConsentDone(tabId, site, isCosmetic) {
     );
     const toast = { type: 'cookieaway:toast', mode: firstTime ? 'full' : 'dot', kind: isCosmetic ? 'hidden' : 'rejected', site };
     await browser.tabs.sendMessage(tabId, toast, { frameId: 0 });
-    return toast;
 }
 
 // Actions from the toast popover. Both are followed by a page reload in the content script.
@@ -127,9 +126,9 @@ browser.tabs.onRemoved.addListener((tabId) => {
 
 // --- Messaging -------------------------------------------------------------------------------
 
-function log(sender, ...args) {
+function warn(sender, ...args) {
     const host = sender.url ? new URL(sender.url).hostname : '?';
-    console.log(`[CookieAway] ${host} (frame ${sender.frameId}):`, ...args);
+    console.warn(`[CookieAway] ${host} (frame ${sender.frameId}):`, ...args);
 }
 
 async function evalInFrame(tabId, frameId, snippetId) {
@@ -156,16 +155,12 @@ browser.runtime.onMessage.addListener((msg, sender) => {
     const reply = (message) => browser.tabs.sendMessage(tabId, message, { frameId });
 
     if (actions[msg.type]) {
-        log(sender, msg.type, site);
         return actions[msg.type](tabId, site).then(() => ({ ok: true }));
     }
 
     switch (msg.type) {
         case 'init':
             isEnabledForFrame(tabId, frameId, site).then((enabled) => {
-                if (!enabled) {
-                    log(sender, 'disabled for', site);
-                }
                 const rules = {
                     autoconsent: [],
                     compact: filterCompactRules(compactRules, { url: sender.url, mainFrame: frameId === 0 }),
@@ -176,29 +171,16 @@ browser.runtime.onMessage.addListener((msg, sender) => {
         case 'eval':
             evalInFrame(tabId, frameId, msg.snippetId)
                 .catch((e) => {
-                    log(sender, 'eval failed', msg.snippetId, e);
+                    warn(sender, 'eval failed', msg.snippetId, e);
                     return false;
                 })
                 .then((result) => reply({ id: msg.id, type: 'evalResp', result }));
             break;
-        case 'cmpDetected':
-            log(sender, 'CMP detected:', msg.cmp);
-            break;
-        case 'popupFound':
-            log(sender, 'popup found:', msg.cmp);
-            break;
-        case 'optOutResult':
-            log(sender, 'opt-out result:', msg.cmp, msg.result);
-            break;
         case 'autoconsentDone':
-            log(sender, 'DONE:', msg.cmp, { cosmetic: msg.isCosmetic, clicks: msg.totalClicks, ms: msg.duration });
-            onConsentDone(tabId, site, msg.isCosmetic).then(
-                (toast) => toast && log(sender, 'toast:', toast.mode, toast.kind),
-                (e) => log(sender, 'toast failed', e),
-            );
+            onConsentDone(tabId, site, msg.isCosmetic).catch((e) => warn(sender, 'toast failed', e));
             break;
         case 'autoconsentError':
-            log(sender, 'error:', msg.details);
+            warn(sender, 'error:', msg.details);
             break;
     }
 });
