@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- macOS app icon: the cookie from cookie.svg on a light tile (Apple's 1024 grid: 824 tile, 100 margin). -->
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fffcf5" />
+      <stop offset="1" stop-color="#f4ead6" />
+    </linearGradient>
+    <linearGradient id="dough" x1="14" y1="14" x2="82" y2="86" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#dccb80" />
+      <stop offset="1" stop-color="#b6874f" />
+    </linearGradient>
+    <linearGradient id="chip" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b47c55" />
+      <stop offset="1" stop-color="#8d5a3b" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000" flood-opacity="0.22" />
+    </filter>
+  </defs>
+  <rect x="100" y="100" width="824" height="824" rx="185" fill="url(#tile)" filter="url(#shadow)" />
+  <rect x="100.5" y="100.5" width="823" height="823" rx="184.5" fill="none" stroke="#000" stroke-opacity="0.06" />
+  <g transform="translate(512 512) scale(6.6) translate(-49 -48)">
+    <path fill="url(#dough)" d="M48 8 A40 40 0 1 0 88 48 L58 48 A10 10 0 0 1 48 38 Z" />
+    <path fill="url(#dough)" d="M56 14 h8 v2 a8 8 0 0 1 -8 8 Z" />
+    <path fill="url(#dough)" d="M90 20 v8 a8 8 0 0 1 -8 -8 Z" />
+    <path fill="url(#dough)" d="M74 42 h-10 v-2 a10 10 0 0 1 10 -10 Z" />
+    <path fill="url(#chip)" d="M22 39 a8 8 0 0 1 16 0 Z" />
+    <path fill="url(#chip)" d="M36 52 v11 a5.5 5.5 0 0 1 0 -11 Z" />
+    <path fill="url(#chip)" d="M56 56 h10 a5 5 0 0 1 -10 0 Z" />
+    <path fill="url(#chip)" d="M46 68 a6 6 0 0 1 0 12 Z" />
+  </g>
+</svg>

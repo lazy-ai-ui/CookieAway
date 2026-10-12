@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-  <!-- Same cookie as the toast icon, as a silhouette: Safari draws toolbar icons in one color. -->
-  <defs>
-    <mask id="cookie">
-      <rect width="16" height="16" fill="#fff" />
-      <circle cx="14.2" cy="2.4" r="3.4" fill="#000" />
-      <circle cx="5.2" cy="6" r="1.15" fill="#000" />
-      <circle cx="9.4" cy="9.6" r="1.15" fill="#000" />
-      <circle cx="5.4" cy="11.2" r="0.95" fill="#000" />
-      <circle cx="11.6" cy="6.3" r="0.8" fill="#000" />
-    </mask>
-  </defs>
-  <circle cx="8" cy="8.2" r="7" mask="url(#cookie)" />
+  <!-- Silhouette of design/cookie.svg for a 16 pt toolbar slot: chips are holes (evenodd), details kept large enough not to blur. -->
+  <path fill-rule="evenodd" d="M7.6 2.1 A6.5 6.5 0 1 0 14.1 8.6 L9.4 8.6 A1.8 1.8 0 0 1 7.6 6.8 Z M9.2 1.4 h2 a2 2 0 0 1 -2 2 Z M13.8 7.4 h-2.2 a2.2 2.2 0 0 1 2.2 -2.2 Z M3.3 7.1 a1.4 1.4 0 0 1 2.8 0 Z M6.7 9.7 v2.4 a1.2 1.2 0 0 1 0 -2.4 Z M9.4 10.5 h2.4 a1.2 1.2 0 0 1 -2.4 0 Z" />
 </svg>
