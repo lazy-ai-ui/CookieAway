@@ -3812,21 +3812,65 @@
 
   // src/content.js
   var isTop = window === window.top;
+  var PREHIDE_TIMEOUT = 6e3;
+  var FADE_OUT_MS = 1500;
+  var EXTRA_PREHIDE = ["#usercentrics-root", "#usercentrics-cmp-ui"];
   if (isTop) {
     rememberConsentState();
   }
   var consent = new AutoConsent((msg) => {
-    if (msg.type === "optOutResult" && msg.result) {
-      keepHidden(consent.foundCmp?.prehideSelectors);
+    if (msg.type === "report") {
+      onLifecycle(msg.state.lifecycle);
+    } else if (msg.type === "optOutResult") {
+      if (msg.result) {
+        hide([...consent.foundCmp?.prehideSelectors ?? [], ...EXTRA_PREHIDE], FADE_OUT_MS);
+      }
+      extraPrehide?.release();
     }
     return browser.runtime.sendMessage(msg);
   });
-  function keepHidden(selectors, ms = 1500) {
-    if (!selectors?.length) return;
+  function hide(selectors, ms) {
+    if (!selectors.length) return null;
     const style = document.createElement("style");
     style.textContent = `${selectors.join(",")} { opacity: 0 !important; pointer-events: none !important; }`;
     (document.head || document.documentElement).append(style);
-    setTimeout(() => style.remove(), ms);
+    const release = () => style.remove();
+    setTimeout(release, ms);
+    return { release };
+  }
+  var extraPrehide = null;
+  var RESCANS = 3;
+  var RECENT_INTERACTION_MS = 5e3;
+  var rescansLeft = RESCANS;
+  var idle = false;
+  var lastInteraction = 0;
+  var rescanTimer = null;
+  function onLifecycle(lifecycle) {
+    if (lifecycle === "nothingDetected" || lifecycle === "done") {
+      extraPrehide?.release();
+    }
+    idle = lifecycle === "nothingDetected";
+    if (idle && Date.now() - lastInteraction < RECENT_INTERACTION_MS) {
+      scheduleRescan();
+    }
+  }
+  function scheduleRescan() {
+    if (!idle || rescansLeft === 0) return;
+    clearTimeout(rescanTimer);
+    rescanTimer = setTimeout(() => {
+      if (!idle) return;
+      idle = false;
+      rescansLeft--;
+      consent.start();
+    }, 1e3);
+  }
+  if (isTop) {
+    const onInteraction = () => {
+      lastInteraction = Date.now();
+      scheduleRescan();
+    };
+    addEventListener("click", onInteraction, true);
+    addEventListener("keydown", onInteraction, true);
   }
   browser.runtime.onMessage.addListener((message) => {
     if (message.type === "cookieaway:toast") {
@@ -3834,6 +3878,9 @@
         showToast({ mode: message.mode, kind: message.kind, onAction, afterAction: () => location.reload() });
       }
       return;
+    }
+    if (message.type === "initResp" && message.config?.enabled) {
+      extraPrehide = hide(EXTRA_PREHIDE, PREHIDE_TIMEOUT);
     }
     return Promise.resolve(consent.receiveMessageCallback(message));
   });
