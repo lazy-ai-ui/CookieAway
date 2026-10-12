@@ -16,6 +16,12 @@ const autoconsentPatches = [
         find: 'excludeContainers(getButtonLikeElements(el))',
         replace: 'excludeContainers(getButtonLikeElements(el).filter((b) => b instanceof HTMLElement))',
     },
+    {
+        // The heuristic's popup search, for notice-only banners ("Согласен" is the only button)
+        // that autoconsent leaves alone in reject mode; content.js hides those without clicking.
+        find: 'export {\n  decodeRules,',
+        replace: 'export {\n  getActionablePopups,\n  decodeRules,',
+    },
 ];
 
 const patchAutoconsent = {

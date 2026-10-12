@@ -1517,6 +1517,9 @@ browser.runtime.onMessage.addListener((msg, sender) => {
     case "autoconsentDone":
       onConsentDone(tabId, site, msg.isCosmetic).catch((e) => warn(sender, "toast failed", e));
       break;
+    case "cookieaway:noticeHidden":
+      onConsentDone(tabId, site, true).catch((e) => warn(sender, "toast failed", e));
+      break;
     case "autoconsentError":
       warn(sender, "error:", msg.details);
       break;

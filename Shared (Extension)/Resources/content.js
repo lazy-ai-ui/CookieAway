@@ -3818,6 +3818,16 @@
   if (isTop) {
     rememberConsentState();
   }
+  var RESCANS = 3;
+  var RECENT_INTERACTION_MS = 5e3;
+  var extraPrehide = null;
+  var rescansLeft = RESCANS;
+  var idle = false;
+  var lastInteraction = 0;
+  var rescanTimer = null;
+  var enabled = false;
+  var currentLifecycle = null;
+  var noticeHidden = false;
   var consent = new AutoConsent((msg) => {
     if (msg.type === "report") {
       onLifecycle(msg.state.lifecycle);
@@ -3838,16 +3848,13 @@
     setTimeout(release, ms);
     return { release };
   }
-  var extraPrehide = null;
-  var RESCANS = 3;
-  var RECENT_INTERACTION_MS = 5e3;
-  var rescansLeft = RESCANS;
-  var idle = false;
-  var lastInteraction = 0;
-  var rescanTimer = null;
   function onLifecycle(lifecycle) {
+    currentLifecycle = lifecycle;
     if (lifecycle === "nothingDetected" || lifecycle === "done") {
       extraPrehide?.release();
+    }
+    if (lifecycle === "nothingDetected") {
+      checkNotice();
     }
     idle = lifecycle === "nothingDetected";
     if (idle && Date.now() - lastInteraction < RECENT_INTERACTION_MS) {
@@ -3863,6 +3870,22 @@
       rescansLeft--;
       consent.start();
     }, 1e3);
+  }
+  var NOTICE_CHECKS_MS = [1500, 4e3];
+  var NOTICE_LEVELS = ["tier1", "tier2"];
+  function checkNotice() {
+    if (!isTop || !enabled || noticeHidden) return;
+    if (!["started", "nothingDetected"].includes(currentLifecycle)) return;
+    const popups = getActionablePopups("tier2");
+    if (popups.length === 0 || popups.some((popup) => !NOTICE_LEVELS.includes(popup.regexClassification))) return;
+    noticeHidden = true;
+    for (const popup of popups) {
+      popup.element.setAttribute("data-cookieaway-hidden", "");
+    }
+    const style = document.createElement("style");
+    style.textContent = "[data-cookieaway-hidden] { opacity: 0 !important; pointer-events: none !important; }";
+    (document.head || document.documentElement).append(style);
+    browser.runtime.sendMessage({ type: "cookieaway:noticeHidden" });
   }
   if (isTop) {
     const onInteraction = () => {
@@ -3880,7 +3903,11 @@
       return;
     }
     if (message.type === "initResp" && message.config?.enabled) {
+      enabled = true;
       extraPrehide = hide(EXTRA_PREHIDE, PREHIDE_TIMEOUT);
+      for (const ms of NOTICE_CHECKS_MS) {
+        setTimeout(checkNotice, ms);
+      }
     }
     return Promise.resolve(consent.receiveMessageCallback(message));
   });
