@@ -74,6 +74,11 @@ svg {
     cursor: default;
 }
 
+/* The text starts 2px inside the circle's right edge; nothing to reveal in dot mode. */
+.dot .text {
+    display: none;
+}
+
 .track {
     position: absolute;
     inset: 0;
