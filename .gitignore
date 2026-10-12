@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# Xcode per-user state (scheme order, breakpoints, window layout)
+xcuserdata/
+
+# Schemes Xcode creates on its own; we only build "CookieAway (macOS)", which Xcode autocreates
+CookieAway.xcodeproj/xcshareddata/xcschemes/

@@ -4,7 +4,7 @@
         "description": "The display name for the extension."
     },
     "extension_description": {
-        "message": "This is CookieAway. You should tell us what your extension does here.",
+        "message": "Автоматически отклоняет cookie-баннеры на сайтах и коротко сообщает об этом внизу страницы.",
         "description": "Description of what the extension does."
     }
 }
