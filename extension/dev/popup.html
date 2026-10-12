@@ -11,7 +11,8 @@
     <script>
         // Minimal mock of the extension APIs the popup uses. ?url=… sets the active tab.
         const params = new URLSearchParams(location.search);
-        const store = { whitelist: ['spiegel.de', 'bbc.co.uk', 'theguardian.com'], rejectedCount: 1284 };
+        const store = { whitelist: ['spiegel.de', 'bbc.co.uk', 'theguardian.com'], rejectedCount: 1284, problems: [], pausedUntil: 0 };
+        const session = { paused: false };
         const listeners = [];
         window.browser = {
             tabs: {
@@ -19,11 +20,29 @@
                 reload: (id) => console.log('reload tab', id),
             },
             storage: {
-                local: { get: async (keys) => Object.fromEntries(keys.map((k) => [k, structuredClone(store[k])])) },
+                session: { get: async (keys) => Object.fromEntries(keys.map((k) => [k, session[k]])) },
+                local: {
+                    get: async (keys) => Object.fromEntries(keys.map((k) => [k, structuredClone(store[k])])),
+                    set: async (o) => {
+                        Object.assign(store, o);
+                        listeners.forEach((f) => f(o, 'local'));
+                    },
+                },
                 onChanged: { addListener: (f) => listeners.push(f) },
             },
             runtime: {
-                sendMessage: async ({ site, whitelisted }) => {
+                sendMessage: async ({ type, site, whitelisted, url, mode }) => {
+                    if (type === 'cookieaway:setPause') {
+                        store.pausedUntil = mode === 'hour' ? Date.now() + 3600e3 : 0;
+                        session.paused = mode === 'session';
+                        listeners.forEach((f) => f({}, 'local'));
+                        return {};
+                    }
+                    if (type === 'cookieaway:reportProblem') {
+                        store.problems = [...store.problems, { site: new URL(url).hostname, frames: [{ frameId: 0, lifecycle: 'nothingDetected' }] }];
+                        listeners.forEach((f) => f({ problems: {} }, 'local'));
+                        return {};
+                    }
                     const rest = store.whitelist.filter((s) => s !== site);
                     store.whitelist = whitelisted ? [...rest, site] : rest;
                     listeners.forEach((f) => f({ whitelist: {} }, 'local'));
@@ -43,6 +62,16 @@
             </span>
             <input type="checkbox" class="switch" id="enabled" role="switch" disabled>
         </label>
+        <button class="link" id="report" disabled>Баннер не закрылся</button>
+    </section>
+
+    <section class="pause" id="pause">
+        <span id="pause-state">Пауза везде:</span>
+        <span class="actions" id="pause-actions">
+            <button class="link" data-pause="hour">На час</button>
+            <button class="link" data-pause="session">До перезапуска Safari</button>
+        </span>
+        <button class="link" id="resume" hidden>Снять паузу</button>
     </section>
 
     <section class="stat">
@@ -53,6 +82,14 @@
         <h2>Исключения</h2>
         <ul id="whitelist"></ul>
         <p class="empty" id="empty">Пока нет. Сайты попадают сюда через переключатель выше или «Не трогать этот сайт» в плашке.</p>
+    </section>
+
+    <section class="problems" id="problems" hidden>
+        <span>Проблемы: <span class="count" id="problem-count">0</span></span>
+        <span class="actions">
+            <button class="link" id="copy">Скопировать</button>
+            <button class="link" id="clear">Очистить</button>
+        </span>
     </section>
 </body>
 </html>

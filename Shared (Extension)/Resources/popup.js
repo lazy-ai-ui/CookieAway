@@ -773,14 +773,25 @@ async function init() {
   site = siteKey(tab?.url);
   $("host").textContent = site ?? "\u041D\u0435\u0434\u043E\u0441\u0442\u0443\u043F\u043D\u043E \u043D\u0430 \u044D\u0442\u043E\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435";
   toggle.disabled = !site;
+  $("report").disabled = !site;
   toggle.addEventListener("change", () => setWhitelisted(site, !toggle.checked));
+  $("report").addEventListener("click", reportProblem);
+  $("copy").addEventListener("click", copyProblems);
+  $("clear").addEventListener("click", () => browser.storage.local.set({ problems: [] }));
+  for (const button of document.querySelectorAll("[data-pause]")) {
+    button.addEventListener("click", () => setPause(button.dataset.pause));
+  }
+  $("resume").addEventListener("click", () => setPause(null));
   browser.storage.onChanged.addListener((changes, area) => {
-    if (area === "local") render();
+    if (area === "local" || area === "session") render();
   });
   await render();
 }
 async function render() {
-  const { whitelist = [], rejectedCount = 0 } = await browser.storage.local.get(["whitelist", "rejectedCount"]);
+  const [{ whitelist = [], rejectedCount = 0, problems = [], pausedUntil = 0 }, { paused = false }] = await Promise.all([
+    browser.storage.local.get(["whitelist", "rejectedCount", "problems", "pausedUntil"]),
+    browser.storage.session.get(["paused"])
+  ]);
   toggle.checked = !!site && !whitelist.includes(site);
   $("count").textContent = rejectedCount.toLocaleString("ru-RU");
   const items = [...whitelist].sort().map((entry) => {
@@ -797,6 +808,46 @@ async function render() {
   });
   $("whitelist").replaceChildren(...items);
   $("empty").hidden = items.length > 0;
+  renderPause(pausedUntil, paused);
+  $("problems").hidden = problems.length === 0;
+  $("problem-count").textContent = problems.length;
+}
+function renderPause(pausedUntil, paused) {
+  const timed = Date.now() < pausedUntil;
+  const on = paused || timed;
+  $("pause").classList.toggle("paused", on);
+  $("pause-actions").hidden = on;
+  $("resume").hidden = !on;
+  if (!on) {
+    $("pause-state").textContent = "\u041F\u0430\u0443\u0437\u0430 \u0432\u0435\u0437\u0434\u0435:";
+  } else if (paused) {
+    $("pause-state").textContent = "\u041D\u0430 \u043F\u0430\u0443\u0437\u0435 \u0434\u043E \u043F\u0435\u0440\u0435\u0437\u0430\u043F\u0443\u0441\u043A\u0430 Safari";
+  } else {
+    const time = new Date(pausedUntil).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+    $("pause-state").textContent = `\u041D\u0430 \u043F\u0430\u0443\u0437\u0435 \u0434\u043E ${time}`;
+  }
+}
+async function setPause(mode) {
+  await browser.runtime.sendMessage({ type: "cookieaway:setPause", mode });
+  if (site) {
+    browser.tabs.reload(tab.id);
+  }
+}
+async function reportProblem() {
+  const button = $("report");
+  button.disabled = true;
+  await browser.runtime.sendMessage({ type: "cookieaway:reportProblem", tabId: tab.id, url: tab.url });
+  button.textContent = "\u0421\u043E\u0445\u0440\u0430\u043D\u0435\u043D\u043E";
+}
+async function copyProblems() {
+  const { problems = [] } = await browser.storage.local.get(["problems"]);
+  await navigator.clipboard.writeText(JSON.stringify(problems, null, 2));
+  flash($("copy"), "\u0421\u043A\u043E\u043F\u0438\u0440\u043E\u0432\u0430\u043D\u043E");
+}
+function flash(button, text) {
+  const original = button.textContent;
+  button.textContent = text;
+  setTimeout(() => button.textContent = original, 1500);
 }
 async function setWhitelisted(entry, whitelisted) {
   await browser.runtime.sendMessage({ type: "cookieaway:setWhitelisted", site: entry, whitelisted });

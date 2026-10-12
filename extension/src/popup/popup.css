@@ -6,6 +6,7 @@
     --hover: rgba(0, 0, 0, 0.05);
     --accent: #34c759;
     --track: rgba(0, 0, 0, 0.12);
+    --link: #0a64d6;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,6 +17,7 @@
         --hover: rgba(255, 255, 255, 0.08);
         --accent: #30d158;
         --track: rgba(255, 255, 255, 0.2);
+        --link: #4ea1ff;
     }
 }
 
@@ -112,6 +114,56 @@ section + section {
     outline-offset: 2px;
 }
 
+.link {
+    all: unset;
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--link);
+    cursor: default;
+}
+
+.link:disabled {
+    color: var(--secondary);
+}
+
+.link:not(:disabled):hover {
+    text-decoration: underline;
+}
+
+.link:focus-visible {
+    outline: 2px solid #0a84ff;
+    outline-offset: 2px;
+    border-radius: 3px;
+}
+
+/* --- Pause ------------------------------------------------------------------------------- */
+
+.pause {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    color: var(--secondary);
+}
+
+.pause .actions {
+    display: flex;
+    gap: 12px;
+}
+
+.pause .link {
+    margin-top: 0;
+}
+
+.pause [hidden] {
+    display: none;
+}
+
+.pause.paused #pause-state {
+    color: var(--text);
+    font-weight: 500;
+}
+
 /* --- Counter ------------------------------------------------------------------------------ */
 
 .stat {
@@ -198,4 +250,28 @@ li button:hover {
 
 .empty[hidden] {
     display: none;
+}
+
+/* --- Problem reports ---------------------------------------------------------------------- */
+
+.problems {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    white-space: nowrap;
+    color: var(--secondary);
+}
+
+.problems[hidden] {
+    display: none;
+}
+
+.problems .actions {
+    display: flex;
+    gap: 12px;
+    margin-left: auto;
+}
+
+.problems .link {
+    margin-top: 0;
 }

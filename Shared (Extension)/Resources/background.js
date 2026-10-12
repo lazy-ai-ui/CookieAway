@@ -1299,9 +1299,23 @@ function updateStorage(area, key, fallback, fn) {
 var getStored = async (area, key, fallback) => (await browser.storage[area].get(key))[key] ?? fallback;
 var pagesDone = /* @__PURE__ */ new Set();
 var SKIP_WINDOW_MS = 15e3;
-async function isEnabledForFrame(tabId, frameId, site) {
+var PAUSE_HOUR_MS = 60 * 60 * 1e3;
+async function isPaused() {
+  const [until, session] = await Promise.all([getStored("local", "pausedUntil", 0), getStored("session", "paused", false)]);
+  return session || Date.now() < until;
+}
+function setPause(mode) {
+  return Promise.all([
+    browser.storage.local.set({ pausedUntil: mode === "hour" ? Date.now() + PAUSE_HOUR_MS : 0 }),
+    browser.storage.session.set({ paused: mode === "session" })
+  ]);
+}
+async function isOff(site) {
   const whitelist = await getStored("local", "whitelist", []);
-  if (whitelist.includes(site)) {
+  return await isPaused() || whitelist.includes(site);
+}
+async function isEnabledForFrame(tabId, frameId, site) {
+  if (await isOff(site)) {
     return false;
   }
   if (frameId === 0) {
@@ -1338,6 +1352,7 @@ async function onConsentDone(tabId, site, isCosmetic) {
     (sites) => sites.includes(site) ? { value: sites, result: false } : { value: [...sites, site], result: true }
   );
   const toast = { type: "cookieaway:toast", mode: firstTime ? "full" : "dot", kind: isCosmetic ? "hidden" : "rejected", site };
+  markDone(tabId);
   await browser.tabs.sendMessage(tabId, toast, { frameId: 0 });
 }
 var actions = {
@@ -1352,8 +1367,82 @@ function setWhitelisted(site, whitelisted) {
     return { value: whitelisted ? [...rest, site] : rest };
   });
 }
+var ICON = "images/toolbar-icon.svg";
+var ICON_OFF = "images/toolbar-icon-off.svg";
+async function updateIcon(tabId, url) {
+  const off = await isOff(siteKey(url));
+  await browser.action.setIcon({ tabId, path: off ? ICON_OFF : ICON });
+}
+function markDone(tabId) {
+  Promise.all([
+    browser.action.setBadgeBackgroundColor?.({ tabId, color: "#34c759" }),
+    browser.action.setBadgeText({ tabId, text: "\u2713" })
+  ]).catch(() => {
+  });
+}
+browser.tabs.onUpdated.addListener((tabId, change, tab) => {
+  if (change.status === "loading") {
+    browser.action.setBadgeText({ tabId, text: "" }).catch(() => {
+    });
+  }
+  if (change.status === "loading" || change.status === "complete") {
+    updateIcon(tabId, tab.url).catch(() => {
+    });
+  }
+});
+var MAX_PROBLEMS = 50;
+var lastLifecycle = /* @__PURE__ */ new Map();
+function pageUrl(url) {
+  try {
+    const { origin, pathname } = new URL(url);
+    return origin + pathname;
+  } catch {
+    return null;
+  }
+}
+function recordFrame(tabId, frameId, url, summary) {
+  return updateStorage("session", "frames", {}, (frames) => ({
+    value: { ...frames, [tabId]: { ...frames[tabId], [frameId]: { url: pageUrl(url), ...summary } } }
+  }));
+}
+function onReport(tabId, frameId, url, state) {
+  const key = `${tabId}:${frameId}`;
+  if (lastLifecycle.get(key) === state.lifecycle) return;
+  lastLifecycle.set(key, state.lifecycle);
+  recordFrame(tabId, frameId, url, {
+    lifecycle: state.lifecycle,
+    cmps: state.detectedCmps,
+    popups: state.detectedPopups,
+    attempts: state.findCmpAttempts,
+    heuristic: state.heuristicPatterns?.length ?? 0,
+    snippets: state.heuristicSnippets?.slice(0, 2).map((s) => s.slice(0, 100)),
+    clicks: state.clicks
+  });
+}
+function forgetTab(tabId) {
+  for (const key of lastLifecycle.keys()) {
+    if (key.startsWith(`${tabId}:`)) lastLifecycle.delete(key);
+  }
+  return updateStorage("session", "frames", {}, (frames) => {
+    const { [tabId]: _, ...rest } = frames;
+    return { value: rest };
+  });
+}
+async function reportProblem(tabId, url) {
+  const frames = (await getStored("session", "frames", {}))[tabId] ?? {};
+  const entry = {
+    time: (/* @__PURE__ */ new Date()).toISOString(),
+    site: siteKey(url),
+    url: pageUrl(url),
+    version: browser.runtime.getManifest().version,
+    frames: Object.entries(frames).map(([frameId, frame]) => ({ frameId: Number(frameId), ...frame }))
+  };
+  await updateStorage("local", "problems", [], (list) => ({ value: [...list, entry].slice(-MAX_PROBLEMS) }));
+  return entry;
+}
 browser.tabs.onRemoved.addListener((tabId) => {
   pagesDone.delete(tabId);
+  forgetTab(tabId);
   updateStorage("session", "skip", {}, (skip) => {
     const once = { ...skip.once };
     const active = { ...skip.active };
@@ -1382,6 +1471,12 @@ browser.runtime.onMessage.addListener((msg, sender) => {
   if (msg.type === "cookieaway:setWhitelisted") {
     return setWhitelisted(msg.site, msg.whitelisted).then(() => ({ ok: true }));
   }
+  if (msg.type === "cookieaway:setPause") {
+    return setPause(msg.mode).then(() => ({ ok: true }));
+  }
+  if (msg.type === "cookieaway:reportProblem") {
+    return reportProblem(msg.tabId, msg.url);
+  }
   const tabId = sender.tab?.id;
   const frameId = sender.frameId;
   if (tabId === void 0) {
@@ -1394,7 +1489,15 @@ browser.runtime.onMessage.addListener((msg, sender) => {
   }
   switch (msg.type) {
     case "init":
+      if (frameId === 0) {
+        forgetTab(tabId);
+        updateIcon(tabId, sender.tab.url ?? sender.url).catch(() => {
+        });
+      }
       isEnabledForFrame(tabId, frameId, site).then((enabled) => {
+        if (!enabled) {
+          recordFrame(tabId, frameId, sender.url, { lifecycle: "disabled" });
+        }
         const rules = {
           autoconsent: [],
           compact: filterCompactRules(compact_rules_default, { url: sender.url, mainFrame: frameId === 0 })
@@ -1407,6 +1510,9 @@ browser.runtime.onMessage.addListener((msg, sender) => {
         warn(sender, "eval failed", msg.snippetId, e);
         return false;
       }).then((result) => reply({ id: msg.id, type: "evalResp", result }));
+      break;
+    case "report":
+      onReport(tabId, frameId, sender.url, msg.state);
       break;
     case "autoconsentDone":
       onConsentDone(tabId, site, msg.isCosmetic).catch((e) => warn(sender, "toast failed", e));
