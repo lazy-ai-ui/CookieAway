@@ -3459,7 +3459,7 @@
     whitelist: "\u0421\u0430\u0439\u0442 \u0432 \u0438\u0441\u043A\u043B\u044E\u0447\u0435\u043D\u0438\u044F\u0445"
   };
   var HOLD_FULL = 3e3;
-  var HOLD_DOT = 900;
+  var HOLD_DOT = 1800;
   var CONFIRM_MS = 2e3;
   var CIRCLE = 36;
   var POP = "cubic-bezier(0.34, 1.9, 0.64, 1)";

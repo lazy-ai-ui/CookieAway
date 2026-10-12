@@ -10,7 +10,7 @@ const CONFIRM = {
 };
 
 const HOLD_FULL = 3000;
-const HOLD_DOT = 900;
+const HOLD_DOT = 1800;
 const CONFIRM_MS = 2000;
 const CIRCLE = 36;
 
